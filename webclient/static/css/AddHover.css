@@ -1,0 +1,12 @@
+.AddHover {
+	width: 24px;
+	height: 30px;
+}
+
+.AddHover.above {
+	background-image: url('../img/add-above.png');
+}
+
+.AddHover.below {
+	background-image: url('../img/add-below.png');
+}

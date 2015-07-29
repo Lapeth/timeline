@@ -1,0 +1,67 @@
+{% extends "list.html" %}
+
+{% block head %}
+
+<script type="text/javascript">
+    $(function(){
+        $("button.with-confirm").confirm("Are you sure you want to delete?");
+    });
+</script>
+
+{% endblock %}
+
+{% block content %}
+    
+    <form method="get" action="/admin/event/" class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Search:</label>
+            <div class="col-sm-8">
+                <input type="text" name="q" class="form-control" {% if query %}value="{{ query }}"{% endif %}/>
+            </div>
+            <div class="col-sm-2">
+                <button class="btn btn-default">Search</button>
+            </div>
+        </div>
+    </form>
+    
+    <hr/>
+    
+    <div class="pull-left actions">
+        {% if "Timeline_data.add_eventbase" in permissions and "Timeline_data.add_eventversion" in permissions %}
+            <a class="btn btn-default" href="/admin/event/create">Create new</a>
+        {% endif %}
+    </div>
+    <div class="pull-right actions">
+        {% include "pagination.html" with pagination=pagination ppath=ppath %}
+    </div>
+    <table id="list" class="table">
+        <tr>
+            <th>Key</th>
+            <th>Title</th>
+            <th>Text</th>
+            <th>Actions</th>
+        </tr>
+        {% for event in events %}
+            <tr {% if not event.enabled %}class="text-muted"{% endif %}>
+                <td>{{ event.key }}</td>
+                <td>{{ event.title }}</td>
+                <td>{{ event.text }}</td>
+                <td>
+                    {% if "Timeline_data.change_eventbase" in permissions or "Timeline_data.add_eventversion" in permissions %}
+                        <a class="btn btn-default" href="/admin/event/{{event.id}}">Edit</a>
+                    {% endif %}
+                    <form action="/admin/event/{{event.id}}" method="post" style="display:inline-block">
+                        {% csrf_token %}
+                        <input type="hidden" name="redirect" value="{{request.get_full_path}}"/>
+                        {% if "Timeline_data.change_eventbase" in permissions %}
+                            <button class="btn btn-default" name="enabled" value="1">{% if event.enabled %}Disable{% else %}Enable{% endif %}</button>
+                        {% endif %}
+                        {% if "Timeline_data.delete_eventbase" in permissions %}
+                            <button type="submit" name="deleteEvent" class="btn btn-default with-confirm">Delete</button>
+                        {% endif %}
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

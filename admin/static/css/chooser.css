@@ -1,0 +1,7 @@
+.chooser select {
+    height: 200px;
+}
+
+.chooser select.chooser-available {
+    height: 166px;
+}

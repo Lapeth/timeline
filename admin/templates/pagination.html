@@ -1,0 +1,5 @@
+<a class="btn btn-default pagination-first {% if not pagination.first %}disabled{% endif %}" href="{% if pagination.first %}{{ ppath }}p={{ pagination.first }}{% endif %}">&lt;&lt;</a>
+<a class="btn btn-default pagination-prev {% if not pagination.prev %}disabled{% endif %}" href="{% if pagination.prev %}{{ ppath }}p={{ pagination.prev }}{% endif %}">&lt;</a>
+{{ pagination.current }}
+<a class="btn btn-default pagination-next {% if not pagination.next %}disabled{% endif %}" href="{% if pagination.next %}{{ ppath }}p={{ pagination.next }}{% endif %}">&gt;</a>
+<a class="btn btn-default pagination-last {% if not pagination.last %}disabled{% endif %}" href="{% if pagination.last %}{{ ppath }}p={{ pagination.last }}{% endif %}">&gt;&gt;</a>

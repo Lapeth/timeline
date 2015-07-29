@@ -1,0 +1,56 @@
+{% extends "list.html" %}
+
+{% block head %}
+    
+<script>
+    $(function(){
+        $("button.with-confirm").confirm("Are you sure you want to delete?");
+    });
+</script>
+
+{% endblock %}
+
+{% block content %}
+    
+    <div class="pull-left actions">
+        {% if "Timeline_data.add_tagbase" in permissions and "Timeline_data.add_tagversion" in permissions %}
+        <a class="btn btn-default" href="/admin/tag/create">Create new</a>
+        {% endif %}
+    </div>
+    <div class="pull-right actions">
+        <a class="btn btn-default" href="{% if pagination.first %}/admin/tag/?p={{ pagination.first }}{% endif %}">&lt;&lt;</a>
+        <a class="btn btn-default" href="{% if pagination.prev %}/admin/tag/?p={{ pagination.prev }}{% endif %}">&lt;</a>
+        {{ pagination.current }}
+        <a class="btn btn-default" href="{% if pagination.next %}/admin/tag/?p={{ pagination.next }}{% endif %}">&gt;</a>
+        <a class="btn btn-default" href="{% if pagination.last %}/admin/tag/?p={{ pagination.last }}{% endif %}">&gt;&gt;</a>
+    </div>
+    <table class="table">
+        <tr>
+            <th>Key</th>
+            <th>Title</th>
+            <th>Actions</th>
+        </tr>
+        {% for tag in tags %}
+        <tr {% if not tag.enabled %}class="text-muted"{% endif %}>
+            <td>{{ tag.key }}</td>
+            <td>{{ tag.title }}</td>
+            <td>
+                {% if "Timeline_data.change_tagbase" in permissions or "Timeline_data.add_tagversion" in permissions %}
+                <a class="btn btn-default" href="/admin/tag/{{tag.id}}">Edit</a>
+                {% endif %}
+                <form action="/admin/tag/{{tag.id}}" method="post" style="display:inline-block">
+                    {% csrf_token %}
+                    <input type="hidden" name="redirect" value="{{request.get_full_path}}"/>
+                    {% if "Timeline_data.change_tagbase" in permissions %}
+                    <button class="btn btn-default" name="enabled" value="1">{% if tag.enabled %}Disable{% else %}Enable{% endif %}</button>
+                    {% endif %}
+                    {% if "Timeline_data.delete_tagbase" in permissions %}
+                    <button type="submit" name="deleteTag" class="btn btn-default with-confirm">Delete</button>
+                    {% endif %}
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+{% endblock %}

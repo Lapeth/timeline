@@ -1,0 +1,50 @@
+button.fake {
+	border: 0 none;
+	background: 0 none;
+	margin: 0;
+	padding: 0;
+}
+
+header {
+	background-color: #000;
+	color: #fff;
+}
+
+.navbar {
+	border: 0 none;
+}
+
+.navbar li.active {
+	background-color: #fff;
+}
+
+.actions {
+	margin: 5px 0;
+}
+
+.verticalScroll {
+	overflow-y: auto;
+}
+
+.form-inline-text {
+	padding-top: 7px;
+}
+
+.form-control .text-muted {
+	color: #999;
+}
+
+
+#loginErrorMessage ul.errorlist {
+	padding: 15px;
+}
+
+ul.errorlist {
+	border: 1px solid #a94442;
+	background: #ffdddd;
+	padding: 10px;
+}
+ul.errorlist li {
+	list-style-type: none;
+	color: #a94442;
+}

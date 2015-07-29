@@ -1,0 +1,29 @@
+.UI {
+	width: 100%;
+	height: 100%;	
+}
+
+.UI .Container {
+	width: 100%;
+}
+
+
+#lightboxBackground {
+	position: absolute;
+	background-color: #000;
+	display: none;
+	z-index: 4;
+	opacity: 0;
+	width: 100%;
+	height: 100%;
+}
+
+
+
+#centerline {
+	position: absolute;
+	width: 1px;
+	height: 100%;
+	left: 50%;
+	background: red;
+}

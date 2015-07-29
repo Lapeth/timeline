@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block head %}
+    
+<script>
+    $(function(){
+        var tagId = {% if tag and tag.id %}{{ tag.id }}{% else %}null{% endif %};
+        var interpreter = function(jsonObj) {
+            console.log(jsonObj);
+            if (jsonObj && jsonObj.length) {
+                for (var i=0; i<jsonObj.length; i++) {
+                    if (jsonObj[i].id !== tagId) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+        var makeAction = function(field) {
+            var _field = field;
+            return function(found, empty, list){
+                var container = this.parent(),
+                    icon = container.find(".glyphicon"),
+                    feedback = container.find(".feedback"),
+                    href,
+                    warn = _field === "title"
+                if (list && list.length) {
+                    href = "/admin/tag/" + list[0].id;
+                }
+                container.toggleClass(warn ? "has-warning" : "has-error", found && !empty);
+                icon.toggleClass("glyphicon-ok", !found && !empty);
+                icon.toggleClass(warn ? "glyphicon-warning-sign" : "glyphicon-remove", found && !empty);
+                feedback.html(empty ? null : (found ? "A tag with this value "+(href?("<a href='"+href+"'>"):"")+"already exists" + (href?"</a>":"") : "(success)"));
+                feedback.toggleClass("sr-only", !found);
+            };
+        };
+        {% if new %}
+            $("input[name=key]").check(function(jq){ return "/tag/?key=" + jq.val() }, interpreter, makeAction("key"));
+        {% endif %}
+        $("input[name=title]").check(function(jq){ return "/tag/?title=" + jq.val() }, interpreter, makeAction("title"));
+    });
+</script>
+
+<script>
+    $(function(){
+        $("button.with-confirm").confirm("Are you sure you want to delete?");
+    });
+</script>
+
+{% endblock %}
+
+{% block content %}
+    
+    {% if not new %}
+        <div class="col-xs-3">
+            <form method="post" action="">
+                <button class="fake" name="enabled" value="toggle" id="enabled">
+                    <input type="checkbox" {% if tag.enabled %}checked="checked"{% endif %} {% if not "data.change_tagbase" in permissions %}disabled{% endif %}/>
+                </button>
+                <label for="enabled">Enabled</label>
+                
+                <div class="verticalScroll">
+                    {% csrf_token %}
+                    
+                    <table class="table">
+                        <tr>
+                            <th>Version</th>
+                            <th>Created</th>
+                            <th>Current</th>
+                        </tr>
+                        {% for revision,date in revisions.items %}
+                            <tr {% if revision == displayedRevision %}class="active"{% endif %}>
+                                <td>{{ revision }}</td>
+                                <td><a href="/admin/tag/{{ tag.id }}/{{ revision }}">{{ date | date }}</a></td>
+                                <td class="text-center">
+                                    {% if revision == currentRevision %}
+                                        <input type="radio" checked="checked"/>
+                                    {% else %}
+                                        <button class="fake" name="current" value="{{ revision }}"><input type="radio"/></button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+    
+    <div class="{% if new %}col-xs-12{% else %}col-xs-9{% endif %}">
+        <form method="post" action="" class="form-horizontal">
+            {% csrf_token %}
+            
+            {% if "Timeline_data.add_tagbase" in permissions or not new %}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Key:</label>
+                    {% if new and "Timeline_data.add_tagbase" in permissions %}
+                        <div class="col-sm-10">
+                            <input type="text" name="key" required class="form-control" aria-describedby="key-feedback"/>
+                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                            <span id="key-feedback" class="feedback"/>
+                        </div>
+                    {% else %}
+                        <div class="col-sm-10 form-inline-text">
+                            {{ tag.key }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Title:</label>
+                {% if "Timeline_data.add_tagversion" in permissions %}
+                    <div class="col-sm-10">
+                        <input type="text" name="title" class="form-control" value="{{ tagVersion.title }}"/>
+                        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                        <span id="title-feedback" class="feedback"/>
+                    </div>
+                {% else %}
+                    <div class="col-sm-10 form-inline-text">
+                        {{ tagVersion.title }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            
+            
+            <div class="pull-right">
+                <a class="btn btn-default" href="/admin/tag/">Close</a>
+                {% if "Timeline_data.add_tagversion" in permissions %}
+                    {% if not new %}
+                        <button type="submit" name="save" class="btn btn-default">Save</button>
+                    {% endif %}
+                    <button type="submit" name="publish" class="btn btn-default">Save and publish</button>
+                {% endif %}
+                {% if not new and "Timeline_data.delete_tagversion" in permissions %}
+                    <button type="submit" name="deleteVersion" class="btn btn-default with-confirm">Delete version</button>
+                {% endif %}
+                {% if not new and "Timeline_data.delete_tagbase" in permissions %}
+                    <button type="submit" name="deleteTag" class="btn btn-default with-confirm">Delete tag</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+{% endblock %}

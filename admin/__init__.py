@@ -1,0 +1,1 @@
+default_app_config = "Timeline.admin.apps.AdminConfig"

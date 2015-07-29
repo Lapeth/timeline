@@ -1,0 +1,303 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block head %}
+    
+<link rel="stylesheet" type="text/css" href='{% static "css/chooser.css" %}'></link>
+<script type="text/javascript" src='{% static "js/chooser.js" %}'></script>
+
+<link rel="stylesheet" type="text/css" href='{% static "3rdparty/datepicker/css/datepicker.css" %}'/>
+<script type="text/javascript" src='{% static "3rdparty/datepicker/js/bootstrap-datepicker.js" %}'></script>
+
+<script type="text/javascript">
+    $(function(){
+        
+        var fillChooser = function(chooser, results) {
+            var available = chooser.find(".chooser-available"),
+            selected = chooser.find(".chooser-selected");
+            var oldItems = available.find("option");
+            for (var i=0; i<results.length; i++) {
+                var result = results[i];
+                
+                if (!available.find("option[value='"+result.id+"']").length && !selected.find("option[value='"+result.id+"']").length) {
+                    var option = document.createElement("option");
+                    option.value = result.id;
+                    option.innerHTML = result.title;
+                    available.append(option);
+                } else {
+                    oldItems = oldItems.not("option[value='"+result.id+"']");
+                }
+            }
+            oldItems.remove();
+        };
+        var runTagSearch = function(query, chooser) {
+            $.ajax({
+                url: "/tag/",
+                data: {
+                    q: query,
+                    f: "json"
+                },
+                dataType: "json",
+                success: function(results, status, response) {
+                    fillChooser(chooser, results);
+                }
+            });
+        };
+        $(".chooser-search").keyup(function(){
+            if (this.searchTimeout) {
+                clearTimeout(this.searchTimeout);
+            }
+            this.searchTimeout = setTimeout(function(){
+                runTagSearch($(this).val(), $(this).parents(".chooser"));
+            }.bind(this), 200);
+        });
+        runTagSearch("",$("#tagChooser"));
+    });
+</script>
+
+<script>
+    $(function(){
+        var eventId = {% if event and event.id %}{{ event.id }}{% else %}null{% endif %};
+        var interpreter = function(jsonObj) {
+            if (jsonObj && jsonObj.length) {
+                for (var i=0; i<jsonObj.length; i++) {
+                    if (jsonObj[i].id !== eventId) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+        
+        var makeAction = function(field) {
+            var _field = field;
+            return function(found, empty, list){
+                var container = this.parent(),
+                    icon = container.find(".glyphicon"),
+                    feedback = container.find(".feedback"),
+                    href,
+                    warn = _field === "title"
+                if (list && list.length) {
+                    href = "/admin/event/" + list[0].id;
+                }
+                container.toggleClass(warn ? "has-warning" : "has-error", found && !empty);
+                icon.toggleClass("glyphicon-ok", !found && !empty);
+                icon.toggleClass(warn ? "glyphicon-warning-sign" : "glyphicon-remove", found && !empty);
+                feedback.html(empty ? null : (found ? "An event with this value "+(href?("<a href='"+href+"'>"):"")+"already exists" + (href?"</a>":"") : "(success)"));
+                feedback.toggleClass("sr-only", !found);
+            };
+        };
+        {% if new %}
+        $("input[name=key]").check(function(jq){ return "/event/?key=" + jq.val() }, interpreter, makeAction("key"));
+        {% endif %}
+        $("input[name=title]").check(function(jq){ return "/event/?title=" + jq.val() }, interpreter, makeAction("title"));
+    });
+</script>
+
+<script>
+    $(function(){
+        $("button.with-confirm").confirm("Are you sure you want to delete?");
+    });
+</script>
+
+{% endblock %}
+
+{% block content %}
+    
+    {% if not new %}
+    <div class="col-xs-3">
+        <form method="post" action="">
+            <button class="fake" name="enabled" value="toggle" id="enabled">
+                <input type="checkbox" {% if event.enabled %}checked="checked"{% endif %} {% if not "data.change_eventbase" in permissions %}disabled{% endif %}/>
+            </button>
+            <label for="enabled">Enabled</label>
+            
+            <div class="verticalScroll">
+                {% csrf_token %}
+                
+                <table class="table">
+                    <tr>
+                        <th>Version</th>
+                        <th>Created</th>
+                        <th>Current</th>
+                    </tr>
+                    {% for revision,date in revisions.items %}
+                        <tr {% if revision == displayedRevision %}class="active"{% endif %}>
+                            <td>{{ revision }}</td>
+                            <td><a href="/admin/event/{{ event.id }}/{{ revision }}">{{ date | date }}</a></td>
+                            <td class="text-center">
+                                {% if revision == currentRevision %}
+                                    <input type="radio" checked="checked"/>
+                                {% else %}
+                                    <button class="fake" name="current" value="{{ revision }}"><input type="radio"/></button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+    
+    <div class="{% if new %}col-xs-12{% else %}col-xs-9{% endif %}">
+        <form method="post" action="" class="form-horizontal">
+            {% csrf_token %}
+            <input type="hidden" name="revision" value="{{ displayedRevision }}"/>
+            
+            {% if "Timeline_data.add_eventbase" in permissions or not new %}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Key:</label>
+                    {% if new and "Timeline_data.add_tagbase" in permissions %}
+                        <div class="col-sm-10">
+                            <input type="text" name="key" required class="form-control" aria-describedby="key-feedback"/>
+                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                            <span id="key-feedback" class="feedback"/>
+                        </div>
+                    {% else %}
+                        <div class="col-sm-10 form-inline-text">
+                            {{ event.key }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+            
+            
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Title:</label>
+                {% if "Timeline_data.add_eventversion" in permissions %}
+                    <div class="col-sm-10">
+                        <input type="text" name="title" required class="form-control" aria-describedby="title-feedback" value="{{ eventVersion.title }}"/>
+                        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                        <span id="title-feedback" class="feedback"/>
+                    </div>
+                {% else %}
+                    <div class="col-sm-10 form-inline-text">
+                        {{ eventVersion.title }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Text:</label>
+                {% if "Timeline_data.add_eventversion" in permissions %}
+                    <div class="col-sm-10">
+                        <textarea name="text" required class="form-control" aria-describedby="text-feedback">{{ eventVersion.text }}</textarea>
+                        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                        <span id="text-feedback" class="feedback"/>
+                    </div>
+                {% else %}
+                    <div class="col-sm-10 form-inline-text">
+                        {{ eventVersion.text }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Date:</label>
+                {% if "Timeline_data.add_eventversion" in permissions %}
+                    <div class="col-sm-1">
+                        <button type="button" id="datepicker" class="btn btn-default" data-date="{{ eventVersion.getYear }}.{{ eventVersion.getMonth }}.{{ eventVersion.getDate }}" data-date-format="yyyy.mm.dd">
+                            <img src='{% static "img/calendar.png" %}'/>
+                        </button>
+                        <script>
+                            $(function(){
+                                $("#datepicker").datepicker({viewMode:2})                         
+                                .on('changeDate', function(ev){
+                                    var date = $('#datepicker').data('date');
+                                    if (date) {
+                                        var dateArr = date.split(".");
+                                        if (dateArr.length === 3) {
+                                            console.log(dateArr);
+                                            $("input[name=year]").val(parseInt(dateArr[0],10));
+                                            $("input[name=month]").val(parseInt(dateArr[1],10));
+                                            $("input[name=date]").val(parseInt(dateArr[2],10));
+                                        }
+                                    }
+                                    if (ev.viewMode === "days") {
+                                        $("#datepicker").datepicker('hide');
+                                    }
+                                });
+                            });
+                        </script>
+                    </div>
+                    
+                    <div class="col-sm-3">
+                        <input type="number" name="date" class="form-control" value="{{ eventVersion.getDate }}" aria-describedby="date-feedback"/>
+                        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                        <span id="date-feedback" class="feedback"/>
+                    </div>
+                    
+                    <div class="col-sm-3">
+                        <input type="number" min="1" max="12" required name="month" class="form-control" aria-describedby="month-feedback" value="{{ eventVersion.getMonth }}"/>
+                        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                        <span id="month-feedback" class="feedback"/>
+                    </div>
+                    
+                    <div class="col-sm-3">
+                        <input type="number" name="year" required class="form-control" aria-describedby="year-feedback" value="{{ eventVersion.getYear }}"/>
+                        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                        <span id="year-feedback" class="feedback"/>
+                    </div>
+                    
+                {% else %}
+                    <div class="col-sm-10 form-inline-text">
+                        {{ eventVersion.getDate }} / {{ eventVersion.getMonth }} / {{ eventVersion.getYear }}
+                    </div>
+                {% endif %}
+            </div>
+           
+            
+            {% if "Timeline_data.add_eventversion" in permissions %}
+                <div id="tagChooser" class="form-group chooser">
+                    <label class="col-sm-2 control-label">Tags:</label>
+                    <div class="col-sm-3">
+                        <label for="eventTagSelected">Selected</label>
+                        <select id="eventTagSelected" multiple="multiple" class="form-control chooser-selected">
+                            {% for tag in eventVersion.tags.all %}
+                                <option value="{{ tag.id }}" {% if not tag.enabled %}class="text-muted" title="This tag is disabled"{% endif %}>{{ tag.getCurrentVersion.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-1" style="margin-top: 90px">
+                        <a class="chooser-transfer-on btn btn-default">&lt;</a>
+                        <a class="chooser-transfer-off btn btn-default">&gt;</a>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="eventTagAvailable">Available</label>
+                        <input type="text" class="form-control chooser-search" placeholder="Search"/>
+                        <select id="eventTagAvailable" multiple="multiple" class="form-control chooser-available"></select>
+                    </div>
+                </div>
+                <script type="text/javascript" src="{% static "js/chooser.js" #}"></script>
+                <script type="text/javascript">
+                    $("#tagChooser").chooser({name:"tags"});
+                </script>
+            {% else %}
+                <label class="col-sm-2 control-label">Tags:</label>
+                <div class="col-sm-10 form-inline-text">
+                    {% for tag in eventVersion.tags.all %}
+                        <a class="btn btn-primary btn-xs{% if not tag.enabled %} look-disabled{% endif %}" {% if not tag.enabled %}title="This tag is disabled"{% endif %} href="{{ tag.getEditPath }}">{{ tag.getCurrentVersion.title }}</a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <div class="pull-right">
+                <a class="btn btn-default" href="/admin/event/">Close</a>
+                {% if "Timeline_data.add_eventversion" in permissions %}
+                    {% if not new %}
+                        <button type="submit" name="save" class="btn btn-default">Save</button>
+                    {% endif %}
+                    <button type="submit" name="publish" class="btn btn-default">Save and publish</button>
+                {% endif %}
+                {% if "Timeline_data.delete_eventversion" in permissions %}
+                    <button type="submit" name="deleteVersion" class="btn btn-default with-confirm">Delete version</button>
+                {% endif %}
+                {% if "Timeline_data.delete_eventbase" in permissions %}
+                    <button type="submit" name="deleteEvent" class="btn btn-default with-confirm">Delete event</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,62 @@
+.col-xs-1 .form-control-feedback,
+.col-sm-1 .form-control-feedback,
+.col-md-1 .form-control-feedback,
+.col-lg-1 .form-control-feedback,
+.col-xs-2 .form-control-feedback,
+.col-sm-2 .form-control-feedback,
+.col-md-2 .form-control-feedback,
+.col-lg-2 .form-control-feedback,
+.col-xs-3 .form-control-feedback,
+.col-sm-3 .form-control-feedback,
+.col-md-3 .form-control-feedback,
+.col-lg-3 .form-control-feedback,
+.col-xs-4 .form-control-feedback,
+.col-sm-4 .form-control-feedback,
+.col-md-4 .form-control-feedback,
+.col-lg-4 .form-control-feedback,
+.col-xs-5 .form-control-feedback,
+.col-sm-5 .form-control-feedback,
+.col-md-5 .form-control-feedback,
+.col-lg-5 .form-control-feedback,
+.col-xs-6 .form-control-feedback,
+.col-sm-6 .form-control-feedback,
+.col-md-6 .form-control-feedback,
+.col-lg-6 .form-control-feedback,
+.col-xs-7 .form-control-feedback,
+.col-sm-7 .form-control-feedback,
+.col-md-7 .form-control-feedback,
+.col-lg-7 .form-control-feedback,
+.col-xs-8 .form-control-feedback,
+.col-sm-8 .form-control-feedback,
+.col-md-8 .form-control-feedback,
+.col-lg-8 .form-control-feedback,
+.col-xs-9 .form-control-feedback,
+.col-sm-9 .form-control-feedback,
+.col-md-9 .form-control-feedback,
+.col-lg-9 .form-control-feedback,
+.col-xs-10 .form-control-feedback,
+.col-sm-10 .form-control-feedback,
+.col-md-10 .form-control-feedback,
+.col-lg-10 .form-control-feedback,
+.col-xs-11 .form-control-feedback,
+.col-sm-11 .form-control-feedback,
+.col-md-11 .form-control-feedback,
+.col-lg-11 .form-control-feedback,
+.col-xs-12 .form-control-feedback,
+.col-sm-12 .form-control-feedback,
+.col-md-12 .form-control-feedback,
+.col-lg-12 .form-control-feedback {
+    right: 15px;
+}
+
+body, body.modal-open {
+    padding-right: 0 !important;
+}
+
+.btn {
+    margin: 0 1px 1px;
+}
+
+.btn.look-disabled {
+    opacity: 0.65;
+}
