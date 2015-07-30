@@ -10,6 +10,7 @@ from models import EventBase
 from models import EventVersion
 from models import TagBase
 from models import TagVersion
+from models import Language
 from Timeline.util.Permissions import require_permission
 import math
 import json
@@ -82,6 +83,11 @@ class Query:
         (q, p) = eatPart(tagQuery)
         return q
     """
+    
+    @staticmethod
+    def listLanguages():
+        return Language.objects.order_by('indexing').all()
+    
 
     @staticmethod
     def filterByTags(dbPath, tagQuery):
@@ -131,6 +137,9 @@ class Query:
             #q = Query.parseTagQuery(request.GET['t'])
             #dbPath = dbPath.filter(q)
             dbPath = Query.filterByTags(dbPath, request.GET['t'])
+            
+        if 'l' in request.GET:
+            dbPath = dbPath.filter(language__code=request.GET['l'])
         
         dbPath = dbPath.distinct()
         pag = Query.pagination(request, dbPath)
@@ -161,6 +170,7 @@ class Query:
         if EventBase.objects.filter(key=key).count() == 0:
             event = EventBase()
             event.key = key
+            event.language = Language.objects.get(code=request.POST['language'])
             event.save()
             try:
                 eventVersion = event.addVersion(request.POST, 'publish' in request.POST)
@@ -251,6 +261,9 @@ class Query:
             else:
                 dbPath = dbPath.filter(tagversion__title__iexact=title)
                 
+        if 'l' in request.GET:
+            dbPath = dbPath.filter(language__code=request.GET['l'])
+                
         dbPath = dbPath.distinct()
         pag = Query.pagination(request, dbPath)
         rawtags = dbPath.order_by("key")[pag['offset'] : pag['offset'] + pag['limit']]
@@ -267,6 +280,7 @@ class Query:
         require_permission(request.user, "Timeline_data.add_tagbase")
         tag = TagBase()
         tag.key = request.POST['key']
+        tag.language = Language.objects.get(code=request.POST['language'])
         tag.save()
         tagVersion = tag.addVersion(request.POST['title'], True)
         return tag

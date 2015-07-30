@@ -13,10 +13,11 @@
 <script type="text/javascript">
     $(function(){
         
-        var fillChooser = function(chooser, results) {
+        var fillChooser = function(chooser, results, killSelectedMismatches) {
             var available = chooser.find(".chooser-available"),
             selected = chooser.find(".chooser-selected");
-            var oldItems = available.find("option");
+            var oldAvailable = available.find("option");
+            var oldSelected = selected.find("option");
             for (var i=0; i<results.length; i++) {
                 var result = results[i];
                 
@@ -26,21 +27,26 @@
                     option.innerHTML = result.title;
                     available.append(option);
                 } else {
-                    oldItems = oldItems.not("option[value='"+result.id+"']");
+                    oldAvailable = oldAvailable.not("option[value='"+result.id+"']");
+                    oldSelected = oldSelected.not("option[value='"+result.id+"']");
                 }
             }
-            oldItems.remove();
+            oldAvailable.remove();
+            if (killSelectedMismatches) {
+                oldSelected.remove();
+            }
         };
-        var runTagSearch = function(query, chooser) {
+        var runTagSearch = function(query, chooser, killSelectedMismatches) {
             $.ajax({
                 url: "/tag/",
                 data: {
                     q: query,
-                    f: "json"
+                    f: "json",
+                    l: $("select[name=language]").val()
                 },
                 dataType: "json",
                 success: function(results, status, response) {
-                    fillChooser(chooser, results);
+                    fillChooser(chooser, results, killSelectedMismatches);
                 }
             });
         };
@@ -49,10 +55,14 @@
                 clearTimeout(this.searchTimeout);
             }
             this.searchTimeout = setTimeout(function(){
-                runTagSearch($(this).val(), $(this).parents(".chooser"));
+                runTagSearch($(this).val(), $(this).parents(".chooser"), false);
             }.bind(this), 200);
         });
-        runTagSearch("",$("#tagChooser"));
+        runTagSearch("",$("#tagChooser"),false);
+        
+        $("select[name=language]").change(function(){
+            runTagSearch($(".chooser-search").val(), $(".chooser"), true);
+        });
     });
 </script>
 
@@ -149,7 +159,7 @@
             {% if "Timeline_data.add_eventbase" in permissions or not new %}
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Key:</label>
-                    {% if new and "Timeline_data.add_tagbase" in permissions %}
+                    {% if new and "Timeline_data.add_eventbase" in permissions %}
                         <div class="col-sm-10">
                             <input type="text" name="key" required class="form-control" aria-describedby="key-feedback"/>
                             <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
@@ -163,6 +173,25 @@
                 </div>
             {% endif %}
             
+            {% if "Timeline_data.add_eventbase" in permissions or not new %}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Language:</label>
+                    {% if new and "Timeline_data.add_eventbase" in permissions %}
+                        <div class="col-sm-10">
+                            <select name="language" required class="form-control" aria-describedby="language-feedback">
+                                {% for language in languages %}
+                                    <option value="{{language.code}}" {% if language.id == event.language.id %}selected{% endif %}>{{language.name}}</option>
+                                {% endfor %}
+                            </select>
+                            <span id="language-feedback" class="feedback"/>
+                        </div>
+                    {% else %}
+                        <div class="col-sm-10 form-inline-text">
+                            {{ event.language.name }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
             
             <div class="form-group">
                 <label class="col-sm-2 control-label">Title:</label>

@@ -181,7 +181,12 @@ class TimeField(models.Field):
 		return super(TimeField, self).formfield(**defaults)
 	
 
+#------------------------------------------------------------------------------
 
+class Language(models.Model):
+	code = models.CharField(max_length=5)
+	indexing = models.IntegerField(unique=True)
+	name = models.CharField(max_length=20)
 
 #------------------------------------------------------------------------------
 
@@ -193,6 +198,7 @@ class TagBase(models.Model):
 	#	db_table = 'data_tagbase'
 	
 	key = models.CharField(max_length=20)
+	language = models.ForeignKey(Language)
 	publicRevision = models.IntegerField()
 	enabled = models.BooleanField(default=True)
 	
@@ -284,6 +290,7 @@ class TagVersion(models.Model):
 	#	db_table = 'data_tagversion'
 	
 	revision = models.IntegerField(editable=False)
+	language = models.CharField(max_length=5)
 	base = models.ForeignKey(TagBase)
 	title = models.CharField('Tag title', max_length=50)
 	created = models.DateTimeField('Version timestamp', auto_now_add=True, editable=False)
@@ -312,6 +319,7 @@ class EventBase(models.Model):
 	#	db_table = 'data_eventbase'
 	
 	key = models.CharField(max_length=20)
+	language = models.ForeignKey(Language)
 	publicRevision = models.IntegerField()
 	enabled = models.BooleanField(default=True)
 	

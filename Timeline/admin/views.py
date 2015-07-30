@@ -23,6 +23,7 @@ from Timeline.data.models import EventBase
 from Timeline.data.models import EventVersion
 from Timeline.data.models import TagBase
 from Timeline.data.models import TagVersion
+from Timeline.data.models import Language
 
 from Timeline.data.query import Query
 
@@ -82,6 +83,8 @@ def listEvents(request):
 # Create an event (POST for saving changes)
 @login_required
 def createEvent(request):
+    print "lang"
+    print Query.listLanguages()
     errors = []
     if request.method == "POST":
         try:
@@ -95,7 +98,8 @@ def createEvent(request):
         "user": request.user,
         "new": True,
         "permissions": request.user.get_all_permissions(),
-        "errors": errors
+        "errors": errors,
+        "languages": Query.listLanguages()
     })
 
 
@@ -144,7 +148,8 @@ def editEvent(request, eventId, revision=None):
         "nav":"events",
         "permissions": request.user.get_all_permissions(),
         "user": request.user,
-        "new": False
+        "new": False,
+        "languages": Query.listLanguages()
     })
 
 #------------------------------------------------------------------------------
@@ -181,7 +186,8 @@ def createTag(request):
         "user": request.user,
         "new": True,
         "permissions": request.user.get_all_permissions(),
-        "errors": errors
+        "errors": errors,
+        "languages": Query.listLanguages()
     })
 
 
@@ -229,7 +235,8 @@ def editTag(request, tagId, revision=None):
             "nav":"tags",
             "permissions": request.user.get_all_permissions(),
             "user": request.user,
-            "new": False
+            "new": False,
+            "languages": Query.listLanguages()
         })
     
 #-------------------------------------------------------------------------------------

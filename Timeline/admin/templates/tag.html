@@ -107,6 +107,26 @@
                     {% endif %}
                 </div>
             {% endif %}
+            
+            {% if "Timeline_data.add_tagbase" in permissions or not new %}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Language:</label>
+                    {% if new and "Timeline_data.add_tagbase" in permissions %}
+                        <div class="col-sm-10">
+                            <select name="language" required class="form-control" aria-describedby="language-feedback">
+                                {% for language in languages %}
+                                    <option value="{{language.code}}" {% if language.id == tag.language.id %}selected{% endif %}>{{language.name}}</option>
+                                {% endfor %}
+                            </select>
+                            <span id="language-feedback" class="feedback"/>
+                        </div>
+                    {% else %}
+                        <div class="col-sm-10 form-inline-text">
+                            {{ tag.language.name }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
         
             <div class="form-group">
                 <label class="col-sm-2 control-label">Title:</label>
