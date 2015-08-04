@@ -12,6 +12,12 @@
 
 	{% javascript 'webclient' %}
 	{% stylesheet 'webclient' %}
+	
+	{% autoescape off %}
+	<script type="text/javascript">
+		var language = {{ language }};
+	</script>
+	{% endautoescape %}
 
 </head>
 
@@ -25,16 +31,6 @@
 
 		(function(){
 			window.events = {};
-/*
-			$.ajax({url:"demo.json",dataType:"json",success:function(arr){
-				for (var i=0; i<arr.length; i++) {
-					var obj = arr[i];
-					if (!window.events[obj.id]) {
-						var event = window.events[obj.id] = new Event(obj);
-						window.ui.addEvent(event);
-					}
-				}
-			}});*/
 		})();
 	</script>
 </body>

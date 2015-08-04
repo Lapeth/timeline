@@ -78,5 +78,24 @@ var Util = {
 				return v < 128 ? a : "\\x"+v.toString(16);
 			});
 		}
+	},
+	
+	cookie: {
+		get: function(key) {
+			var name = key + "=";
+			var ca = document.cookie.split(';');
+			for (var i=0; i<ca.length; i++) {
+				var c = ca[i].trim();
+				if (c.indexOf(name) == 0) {
+					return c.substring(name.length);
+				}
+			}
+			return null;
+		},
+		
+		set: function(key, value, expiry) {
+			var expireStr = (expiry && expiry instanceof Date) ? ("; expires="+d.toUTCString()) : "";
+			document.cookie = key + "=" + value + expireStr;
+		}
 	}
 }

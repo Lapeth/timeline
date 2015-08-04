@@ -120,6 +120,16 @@ CompoundFilter.prototype.removeFilter = function(subfilter){
 	}
 }
 
+CompoundFilter.prototype.removeAllFilters = function(){
+	if (this.subfilters.length) {
+		for (var i=0; i<this.subfilters.length; i++) {
+			this.subfilters[i].parent = null;
+		}
+		this.subfilters.length = 0;
+		this._onUpdate();
+	}
+}
+
 CompoundFilter.prototype.addUpdateCallback = function(callback){
 	if (!this._updateCallbacks) {
 		this._updateCallbacks = [];

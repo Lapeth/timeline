@@ -13,7 +13,6 @@ from models import TagVersion
 from models import Language
 from Timeline.util.Permissions import require_permission
 import math
-import json
 import re
 
 

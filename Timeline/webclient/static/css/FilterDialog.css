@@ -64,3 +64,9 @@ button.FilterDelete {
 	border: 0 none;
 	cursor: pointer;
 }
+
+#language {
+	width: 196px;
+	height: 24px;
+	margin: 2px;
+}

@@ -3,7 +3,9 @@ FilterDialog = function(param){
 	this._input = this.createElement("input",null,"FilterInput",true);
 	this._input.attr("placeholder", "Search");
 	this._filterContainer = this.createElement("div",null,"FilterContainer",true);
+	this._languageChooser = this.createElement("select","language",null,true);
 	this._topFilter = new AndFilter(null, null);
+	this._language = "en";
 	this._topFilter.addUpdateCallback(function(filter) {
 		if (filter.isEmpty()) {
 			window.ui.setEvents([]);
@@ -36,7 +38,7 @@ FilterDialog = function(param){
 		source: function(request, response) {
 			$.ajax({
 				url: "/tag/",
-				data: { q: request.term },
+				data: { q: request.term, l: this._language },
 				dataType: "json",
 				complete: function(resp){
 					if (resp && resp.status === 200) {
@@ -66,13 +68,25 @@ FilterDialog = function(param){
 			return false;
 		}.bind(this)
 	});
-
-	/*this._filterContainer.sortable({
-		axis:"y",
-		revert:200,
-		placeholder: "FilterPlaceholder",
-		update: this.onListUpdate.bind(this)
-	});*/
+	
+	if (window.language && window.language.available) {
+		for (var i=0; i<window.language.available.length; i++) {
+			var language = window.language.available[i];
+			var option = this.createElement("option", null, null, this._languageChooser);
+			option.attr("value", language.code);
+			option.text(language.name);
+			if (language.code === window.language.current) {
+				option.attr("selected","selected");
+			}
+		}
+	}
+	this._languageChooser.change(function(event) {
+		this.changeLanguage(event.target.value);
+	}.bind(this));
+	
+	
+	this.layout();
+	$(window).resize(this.layout.bind(this));
 };
 
 Item.inherit(FilterDialog, Control);
@@ -102,6 +116,10 @@ FilterDialog.prototype._removeFilter = function(filterId) {
 		filter.remove();
 	}
 }
+FilterDialog.prototype._removeAllFilters = function() {
+	this._filterContainer.empty();
+	this._topFilter.removeAllFilters();
+}
 
 FilterDialog.prototype.onMouseDown = function(ev) {
 	ev.stopPropagation();
@@ -116,4 +134,14 @@ FilterDialog.prototype.onListUpdate = function() {
 			parent = (parentElement.is(this._filterContainer)) ? this._topFilter : parentElement.data("filter");
 		filter.setParent(parent, true);
 	}
+}
+
+FilterDialog.prototype.layout = function() {
+	this._filterContainer.height(this.height() - this._input.outerHeight(true) - this._languageChooser.outerHeight(true));
+}
+
+FilterDialog.prototype.changeLanguage = function(newLanguageCode) {
+	this._removeAllFilters();
+	this._language = newLanguageCode;
+	Util.cookie.set("language", newLanguageCode);
 }
