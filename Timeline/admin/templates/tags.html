@@ -12,6 +12,34 @@
 
 {% block content %}
     
+    <div class="form-group form-horizontal">
+        <form method="get" action="/admin/tag/" class="">
+            <div class="form-group col-sm-2">
+                <select name="l" class="form-control selectpicker autosubmit">
+                    <option value="">Any language</option>
+                    {% for lang in languages %}
+                        <option value="{{lang.code}}" {% if lang.code == language %}selected{% endif %}>{{lang.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <input type="hidden" name="q" value="{{ query }}"/>
+        </form>
+        <form method="get" action="/admin/event/" class="">
+            <div class="form-group">
+                <div class="col-sm-1">
+                    <label class="control-label">Search:</label>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" name="q" class="form-control" {% if query %}value="{{ query }}"{% endif %}/>
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-default">Search</button>
+                </div>
+            </div>
+            <input type="hidden" name="l" value="{{ language }}"/>
+        </form>
+    </div>    
+    
     <div class="pull-left actions">
         {% if "Timeline_data.add_tagbase" in permissions and "Timeline_data.add_tagversion" in permissions %}
         <a class="btn btn-default" href="/admin/tag/create">Create new</a>

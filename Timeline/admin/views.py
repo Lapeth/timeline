@@ -70,12 +70,14 @@ def listEvents(request):
         "pagination": pagination,
         "query": query,
         "path": path,
-        "ppath": ppath,
+        "ppath": ppath
     }
     if fmt == "json":
         return HttpResponse(JSONSerializer().serialize(data))
     data["user"] = request.user
     data["permissions"] = request.user.get_all_permissions()
+    data["languages"] = Query.listLanguages()
+    data["language"] = request.GET.get("l")
     return render(request, "events.html", data, context_instance=RequestContext(request))
     
 
@@ -162,12 +164,17 @@ def listTags(request):
     fmt = request.GET['f'] if 'f' in request.GET else "html"
     if fmt == "json":
         return HttpResponse(JSONSerializer().serialize(tags))
+    
+    languages = Query.listLanguages()
+    
     return render(request, "tags.html", {
         "tags": tags,
         "nav": "tags",
         "pagination": pagination,
         "user": request.user,
         "permissions": request.user.get_all_permissions(),
+        "languages": languages,
+        "language": request.GET.get("l")
     })
 
 # Create a tag (POST for saving changes)

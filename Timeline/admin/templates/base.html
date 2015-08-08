@@ -8,8 +8,10 @@
         <script src="{% static "3rdparty/jquery-2.1.3/jquery.min.js" %}"></script>
 		
         <link rel="stylesheet" type="text/css" href='{% static "3rdparty/bootstrap-3.3.2/css/bootstrap.css" %}'/>
+        <link rel="stylesheet" type="text/css" href='{% static "3rdparty/bootstrap-select/bootstrap-select.min.css" %}'/>
         <script type="text/javascript" src='{% static "3rdparty/bootstrap-3.3.2/js/bootstrap.js" %}'></script>
         <script type="text/javascript" src='{% static "3rdparty/bootbox/bootbox.min.js" %}'></script>
+        <script type="text/javascript" src='{% static "3rdparty/bootstrap-select/bootstrap-select.min.js" %}'></script>
 		
         {% stylesheet 'admin_common' %}
         {% javascript 'admin_common' %}
@@ -21,6 +23,12 @@
 					if (!(code == 0 || (code >= 48 && code <= 57))) {
 						event.preventDefault();
 					}
+				});
+			});
+			
+			$(function(){
+				$(".autosubmit").change(function(){
+					$(this).parents("form").submit();
 				});
 			});
 		</script>
