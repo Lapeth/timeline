@@ -201,6 +201,7 @@ class TagBase(models.Model):
 	language = models.ForeignKey(Language)
 	publicRevision = models.IntegerField()
 	enabled = models.BooleanField(default=True)
+	group = models.IntegerField()
 	
 	def save(self, *args, **kwargs):
 		if self.pk is not None:
@@ -322,6 +323,7 @@ class EventBase(models.Model):
 	language = models.ForeignKey(Language)
 	publicRevision = models.IntegerField()
 	enabled = models.BooleanField(default=True)
+	group = models.IntegerField()
 	
 	def save(self, *args, **kwargs):
 		if self.pk is not None:
