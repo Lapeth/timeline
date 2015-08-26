@@ -137,7 +137,7 @@ class Query:
             #dbPath = dbPath.filter(q)
             dbPath = Query.filterByTags(dbPath, request.GET['t'])
             
-        if 'l' in request.GET:
+        if 'l' in request.GET and request.GET['l'] != '':
             dbPath = dbPath.filter(language__code=request.GET['l'])
         
         dbPath = dbPath.distinct()

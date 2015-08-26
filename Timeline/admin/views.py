@@ -68,7 +68,7 @@ def listEvents(request):
         "events":events,
         "nav":"events",
         "pagination": pagination,
-        "query": query,
+        "query": query or '',
         "path": path,
         "ppath": ppath
     }
