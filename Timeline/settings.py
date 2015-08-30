@@ -13,27 +13,26 @@ import os
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
 import socket
 
-if socket.gethostname() == 'Venus':
-    # SECURITY WARNING: don't run with debug turned on in production!
-    DEBUG = True
-    TEMPLATE_DEBUG = True
-else:
-    DEBUG = False
-    TEMPLATE_DEBUG = False
+ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 
+configs = {
+    '/opt/timeline/production/Timeline' : 'production',
+    '/opt/timeline/staging/Timeline' : 'staging',
+    '/opt/timeline/demo/Timeline' : 'demo',
+}
+config_module = __import__("config_%s" % configs[ROOT_PATH], globals(), locals(), 'Timeline');
 
+for setting in dir(config_module):
+    print setting
+    if setting == setting.upper():
+        locals()[setting] = getattr(config_module, setting)
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'dv(n(zkqd^qpz^#&*=wh5@6#emx5)b$ew_d##=^dkh56^u1pdr'
-
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -73,15 +72,6 @@ TEMPLATE_CONTEXT_PROCESSORS = TCP + (
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'timeline',
-        'USER': 'timeline',
-        'PASSWORD': 'z5h9b4jk'
-    }
-}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
@@ -178,3 +168,4 @@ PIPELINE_JS = {
         'output_filename': 'js/admin_common.js',
     },
 }
+
