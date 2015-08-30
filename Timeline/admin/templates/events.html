@@ -62,7 +62,7 @@
                 <td>{{ event.key }}</td>
                 <td>{{ event.title }}</td>
                 <td>{{ event.text }}</td>
-                <td>
+                <td style="white-space: nowrap">
                     {% if "Timeline_data.change_eventbase" in permissions or "Timeline_data.add_eventversion" in permissions %}
                         <a class="btn btn-default" href="/admin/event/{{event.id}}">Edit</a>
                     {% endif %}

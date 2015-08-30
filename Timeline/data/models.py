@@ -164,8 +164,11 @@ class TimeField(models.Field):
 		return 'bigint'
 	
 	def get_prep_value(self, timeValue):
-		print "prep_value: (%d,%d) => %d" % (timeValue.year, timeValue.day, (timeValue.year * 1000) + timeValue.day)
-		return (timeValue.year * 1000) + timeValue.day
+		if timeValue:
+			print "prep_value: (%d,%d) => %d" % (timeValue.year, timeValue.day, (timeValue.year * 1000) + timeValue.day)
+			return (timeValue.year * 1000) + timeValue.day
+		else:
+			return None
 	
 	def to_python(self, dbValue):
 		print "to_python: %s" % dbValue
@@ -201,7 +204,7 @@ class TagBase(models.Model):
 	language = models.ForeignKey(Language)
 	publicRevision = models.IntegerField()
 	enabled = models.BooleanField(default=True)
-	group = models.IntegerField()
+	group = models.IntegerField(default=0)
 	
 	def save(self, *args, **kwargs):
 		if self.pk is not None:
@@ -291,7 +294,6 @@ class TagVersion(models.Model):
 	#	db_table = 'data_tagversion'
 	
 	revision = models.IntegerField(editable=False)
-	language = models.CharField(max_length=5)
 	base = models.ForeignKey(TagBase)
 	title = models.CharField('Tag title', max_length=50)
 	created = models.DateTimeField('Version timestamp', auto_now_add=True, editable=False)
@@ -323,7 +325,7 @@ class EventBase(models.Model):
 	language = models.ForeignKey(Language)
 	publicRevision = models.IntegerField()
 	enabled = models.BooleanField(default=True)
-	group = models.IntegerField()
+	group = models.IntegerField(default=0)
 	
 	def save(self, *args, **kwargs):
 		if self.pk is not None:
