@@ -428,6 +428,7 @@ class EventVersion(models.Model):
 	title = models.CharField('Event title', max_length=50)
 	text = models.TextField('Event contents')
 	date = TimeField('Event date', null=True, blank=True)
+	wiki = models.CharField('Wikipedia link', max_length=75, null=True, blank=True)
 	tags = models.ManyToManyField(TagBase)
 	created = models.DateTimeField('Version timestamp', auto_now_add=True, editable=False)
 		
