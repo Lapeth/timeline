@@ -41,12 +41,6 @@
     });
 </script>
 
-<script>
-    $(function(){
-        $("button.with-confirm").confirm("Are you sure you want to delete?");
-    });
-</script>
-
 {% endblock %}
 
 {% block content %}
@@ -154,10 +148,10 @@
                     <button type="submit" name="publish" class="btn btn-default">Save and publish</button>
                 {% endif %}
                 {% if not new and "Timeline_data.delete_tagversion" in permissions %}
-                    <button type="submit" name="deleteVersion" class="btn btn-default with-confirm">Delete version</button>
+                    <button type="submit" name="deleteVersion" class="btn btn-default with-confirm" data-dialog-text="Are you sure you want to delete?">Delete version</button>
                 {% endif %}
                 {% if not new and "Timeline_data.delete_tagbase" in permissions %}
-                    <button type="submit" name="deleteTag" class="btn btn-default with-confirm">Delete tag</button>
+                    <button type="submit" name="deleteTag" class="btn btn-default with-confirm" data-dialog-text="Are you sure you want to delete?">Delete tag</button>
                 {% endif %}
             </div>
         </form>

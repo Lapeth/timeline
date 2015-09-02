@@ -1,21 +1,5 @@
 {% extends "list.html" %}
 
-{% block head %}
-
-<script type="text/javascript">
-    $(function(){
-        $("button.with-confirm").each(function(){
-			var jq = $(this);
-			var dialogText = jq.attr("data-dialog-text");
-			if (dialogText) {
-				jq.confirm(dialogText);
-			}
-		});
-    });
-</script>
-
-{% endblock %}
-
 {% block content %}
     
     <div class="form-group form-horizontal">
