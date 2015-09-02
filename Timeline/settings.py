@@ -18,12 +18,12 @@ ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 configs = {
     '/opt/timeline/production/Timeline' : 'production',
     '/opt/timeline/staging/Timeline' : 'staging',
-    '/opt/timeline/demo/Timeline' : 'demo',
+    '/opt/timeline/demo/Timeline' : 'demo'
 }
-config_module = __import__("config_%s" % configs[ROOT_PATH], globals(), locals(), 'Timeline');
+
+config_module = __import__("config_%s" % configs.get(ROOT_PATH, 'development'), globals(), locals(), 'Timeline')
 
 for setting in dir(config_module):
-    print setting
     if setting == setting.upper():
         locals()[setting] = getattr(config_module, setting)
 
