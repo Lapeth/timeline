@@ -4,11 +4,11 @@
 
 {% block head %}
     
-<link rel="stylesheet" type="text/css" href='{% static "css/chooser.css" %}'></link>
-<script type="text/javascript" src='{% static "js/chooser.js" %}'></script>
+<link rel="stylesheet" type="text/css" href="{% static "css/chooser.css" %}"/>
+<script type="text/javascript" src="{% static "js/chooser.js" %}"></script>
 
-<link rel="stylesheet" type="text/css" href='{% static "3rdparty/datepicker/css/datepicker.css" %}'/>
-<script type="text/javascript" src='{% static "3rdparty/datepicker/js/bootstrap-datepicker.js" %}'></script>
+<link rel="stylesheet" type="text/css" href="{% static "3rdparty/datepicker/css/datepicker.css" %}"/>
+<script type="text/javascript" src="{% static "3rdparty/datepicker/js/bootstrap-datepicker.js" %}"></script>
 
 <script type="text/javascript">
     $(function(){
@@ -299,7 +299,7 @@
                         <select id="eventTagAvailable" multiple="multiple" class="form-control chooser-available"></select>
                     </div>
                 </div>
-                <script type="text/javascript" src="{% static "js/chooser.js" #}"></script>
+                <script type="text/javascript" src="{% static "js/chooser.js" %}"></script>
                 <script type="text/javascript">
                     $("#tagChooser").chooser({name:"tags"});
                 </script>
