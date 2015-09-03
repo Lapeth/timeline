@@ -42,6 +42,7 @@
     </div>
     <table id="list" class="table">
         <tr>
+            <th>Language</th>
             <th>Key</th>
             <th>Title</th>
             <th>Text</th>
@@ -49,6 +50,7 @@
         </tr>
         {% for event in events %}
             <tr {% if not event.enabled %}class="text-muted"{% endif %}>
+                <td>{{ event.language.name }}</td>
                 <td>{{ event.key }}</td>
                 <td>{{ event.title }}</td>
                 <td>{{ event.text }}</td>

@@ -11,6 +11,12 @@ def lang(apps, schema_editor):
     en.indexing = 1
     en.name = "English"
     en.save()
+    da = Language()
+    da.id = 2
+    da.code = 'da'
+    da.indexing = 2
+    da.name = "Dansk"
+    da.save()
 
 class Migration(migrations.Migration):
 

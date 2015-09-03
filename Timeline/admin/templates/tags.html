@@ -44,12 +44,14 @@
     </div>
     <table class="table">
         <tr>
+            <th>Language</th>
             <th>Key</th>
             <th>Title</th>
             <th>Actions</th>
         </tr>
         {% for tag in tags %}
         <tr {% if not tag.enabled %}class="text-muted"{% endif %}>
+            <td>{{ tag.language.name }}</td>
             <td>{{ tag.key }}</td>
             <td>{{ tag.title }}</td>
             <td>

@@ -99,7 +99,7 @@ class Query:
     
     
     @staticmethod
-    def listEvents(request):
+    def listEvents(request, shorten):
         dbPath = EventBase.objects
         cullDisabled = True
         
@@ -133,8 +133,6 @@ class Query:
             dbPath = dbPath.filter(Q(key__icontains=query) | Q(eventversion__title__icontains=query))
             
         if 't' in request.GET:
-            #q = Query.parseTagQuery(request.GET['t'])
-            #dbPath = dbPath.filter(q)
             dbPath = Query.filterByTags(dbPath, request.GET['t'])
             
         if 'l' in request.GET and request.GET['l'] != '':
@@ -144,16 +142,17 @@ class Query:
         pag = Query.pagination(request, dbPath)
         rawevents = dbPath.order_by("key")[pag['offset']: pag['offset'] + pag['limit']]
         events = []
-        for rawevent in rawevents:
-            rawversion = rawevent.getCurrentVersion()
-            if rawversion is not None:
-                events.append({'id': rawevent.id,
-                               'key': rawevent.key,
-                               'title': rawversion.title,
-                               'text': rawversion.text,
-                               'enabled': rawevent.enabled,
-                               'year': rawversion.getYear(),
-                               'day': rawversion.getDay()
+        for event in rawevents:
+            version = event.getCurrentVersion()
+            if version is not None:
+                events.append({'id': event.id,
+                               'key': event.key,
+                               'title': version.title,
+                               'text': version.text,
+                               'enabled': event.enabled,
+                               'year': version.getYear(),
+                               'day': version.getDay(),
+                               'language': event.language.code if shorten else event.language
                                })
           
         return (events, pag)
@@ -166,10 +165,11 @@ class Query:
     def createEvent(request):
         require_permission(request.user, "Timeline_data.add_eventbase")
         key = request.POST['key']
-        if EventBase.objects.filter(key=key).count() == 0:
+        languageCode = request.POST['language']
+        if EventBase.objects.filter(key=key, language__code=languageCode).count() == 0:
             event = EventBase()
             event.key = key
-            event.language = Language.objects.get(code=request.POST['language'])
+            event.language = Language.objects.get(code=languageCode)
             event.save()
             try:
                 eventVersion = event.addVersion(request.POST, 'publish' in request.POST)
@@ -178,7 +178,7 @@ class Query:
                 event.delete()
                 raise e
         else:
-            raise Exception("Event with key '%s' already exists" % key)
+            raise Exception("Event with key '%s' already exists for language '%s'" % (key, languageCode))
         
     
     
@@ -237,7 +237,7 @@ class Query:
     
     # Show a filterable list of all tags
     @staticmethod
-    def listTags(request):
+    def listTags(request, shorten):
         dbPath = TagBase.objects
         
         if 'q' in request.GET:
@@ -269,19 +269,31 @@ class Query:
         tags = []
         for tag in rawtags:
             version = tag.getCurrentVersion()
-            tags.append({'id': tag.id, 'key': tag.key, 'title': version.title, 'key': tag.key, 'enabled': tag.enabled});
+            tags.append({
+                'id': tag.id,
+                'key': tag.key,
+                'title': version.title,
+                'key': tag.key,
+                'enabled': tag.enabled,
+                'language': tag.language.code if shorten else tag.language
+            });
         return (tags,pag)
     
     # Create an event (POST for saving changes)
     @staticmethod
     def createTag(request):
         require_permission(request.user, "Timeline_data.add_tagbase")
-        tag = TagBase()
-        tag.key = request.POST['key']
-        tag.language = Language.objects.get(code=request.POST['language'])
-        tag.save()
-        tagVersion = tag.addVersion(request.POST['title'], True)
-        return tag
+        key = request.POST['key']
+        languageCode = request.POST['language']
+        if TagBase.objects.filter(key=key, language__code=languageCode).count() == 0:
+            tag = TagBase()
+            tag.key = key
+            tag.language = Language.objects.get(code=languageCode)
+            tag.save()
+            tagVersion = tag.addVersion(request.POST['title'], True)
+            return tag
+        else:
+            raise Exception("Tag with key '%s' already exists for language '%s'" % (key, languageCode))
     
     
     # Show an event (POST for saving changes)

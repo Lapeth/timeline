@@ -41,8 +41,11 @@ pathPrefix = "/admin"
 # Show a filterable list of all events
 @login_required
 def listEvents(request):
-    (events, pagination) = Query.listEvents(request)
-    fmt = request.GET['f'] if 'f' in request.GET else "html"
+    isJSON = request.GET.get('f') == "json"
+    (events, pagination) = Query.listEvents(request, isJSON)
+    
+    if isJSON:
+        return HttpResponse(JSONSerializer().serialize(events))
     
     path = "/event/"
     if len(request.GET):
@@ -70,8 +73,6 @@ def listEvents(request):
         "path": path,
         "ppath": ppath
     }
-    if fmt == "json":
-        return HttpResponse(JSONSerializer().serialize(data))
     data["user"] = request.user
     data["permissions"] = request.user.get_all_permissions()
     data["languages"] = Query.listLanguages()
@@ -156,9 +157,10 @@ def editEvent(request, eventId, revision=None):
 # Show a filterable list of all tags
 @login_required
 def listTags(request):
-    (tags,pagination) = Query.listTags(request)
-    fmt = request.GET['f'] if 'f' in request.GET else "html"
-    if fmt == "json":
+    isJSON = request.GET.get('f') == "json"
+    (tags,pagination) = Query.listTags(request, isJSON)
+    
+    if isJSON:
         return HttpResponse(JSONSerializer().serialize(tags))
     
     languages = Query.listLanguages()
