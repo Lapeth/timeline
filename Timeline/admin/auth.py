@@ -90,6 +90,5 @@ class StyledPasswordChangeForm(PasswordChangeForm):
 class StyledPasswordResetForm(PasswordResetForm):
     def __init__(self, user=None, *args, **kwargs):
         super(StyledPasswordResetForm, self).__init__(user, *args, **kwargs)
-        print "hejsa"
         self.fields['email'].widget.attrs['class'] = 'form-control'
     

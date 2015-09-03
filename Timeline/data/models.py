@@ -18,7 +18,6 @@ class TimeFormWidget(forms.MultiWidget):
 		
 	def decompress(self, value):
 		# Convert Time object to form values
-		print "decompress: %s" % value
 		if value:
 			year = value / 1000
 			day = value % 1000
@@ -44,7 +43,6 @@ class TimeFormField(forms.MultiValueField):
 
 	def compress(self, data):
 		# Convert form value to Time object
-		print "compress: %s" % data
 		if data:
 			return Time(data[0], data[1], data[2])
 		return None
@@ -165,13 +163,12 @@ class TimeField(models.Field):
 	
 	def get_prep_value(self, timeValue):
 		if timeValue:
-			print "prep_value: (%d,%d) => %d" % (timeValue.year, timeValue.day, (timeValue.year * 1000) + timeValue.day)
+			#print "prep_value: (%d,%d) => %d" % (timeValue.year, timeValue.day, (timeValue.year * 1000) + timeValue.day)
 			return (timeValue.year * 1000) + timeValue.day
 		else:
 			return None
 	
 	def to_python(self, dbValue):
-		print "to_python: %s" % dbValue
 		#return Time(dbValue >> 10, dbValue & 0x03ff)
 		return super(TimeField, self).to_python(dbValue)
 	

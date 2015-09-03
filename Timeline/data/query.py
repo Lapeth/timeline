@@ -268,7 +268,6 @@ class Query:
         rawtags = dbPath.order_by("key")[pag['offset'] : pag['offset'] + pag['limit']]
         tags = []
         for tag in rawtags:
-            print tag
             version = tag.getCurrentVersion()
             tags.append({'id': tag.id, 'key': tag.key, 'title': version.title, 'key': tag.key, 'enabled': tag.enabled});
         return (tags,pag)

@@ -4,11 +4,11 @@
 
 {% block head %}
     
-<link rel="stylesheet" type="text/css" href='{% static "css/chooser.css" %}'></link>
-<script type="text/javascript" src='{% static "js/chooser.js" %}'></script>
+<link rel="stylesheet" type="text/css" href="{% static "css/chooser.css" %}"/>
+<script type="text/javascript" src="{% static "js/chooser.js" %}"></script>
 
-<link rel="stylesheet" type="text/css" href='{% static "3rdparty/datepicker/css/datepicker.css" %}'/>
-<script type="text/javascript" src='{% static "3rdparty/datepicker/js/bootstrap-datepicker.js" %}'></script>
+<link rel="stylesheet" type="text/css" href="{% static "3rdparty/datepicker/css/datepicker.css" %}"/>
+<script type="text/javascript" src="{% static "3rdparty/datepicker/js/bootstrap-datepicker.js" %}"></script>
 
 <script type="text/javascript">
     $(function(){
@@ -102,12 +102,6 @@
         $("input[name=key]").check(function(jq){ return "/event/?key=" + jq.val() }, interpreter, makeAction("key"));
         {% endif %}
         $("input[name=title]").check(function(jq){ return "/event/?title=" + jq.val() }, interpreter, makeAction("title"));
-    });
-</script>
-
-<script>
-    $(function(){
-        $("button.with-confirm").confirm("Are you sure you want to delete?");
     });
 </script>
 
@@ -299,7 +293,7 @@
                         <select id="eventTagAvailable" multiple="multiple" class="form-control chooser-available"></select>
                     </div>
                 </div>
-                <script type="text/javascript" src="{% static "js/chooser.js" #}"></script>
+                <script type="text/javascript" src="{% static "js/chooser.js" %}"></script>
                 <script type="text/javascript">
                     $("#tagChooser").chooser({name:"tags"});
                 </script>
@@ -321,10 +315,10 @@
                     <button type="submit" name="publish" class="btn btn-default">Save and publish</button>
                 {% endif %}
                 {% if "Timeline_data.delete_eventversion" in permissions %}
-                    <button type="submit" name="deleteVersion" class="btn btn-default with-confirm">Delete version</button>
+                    <button type="submit" name="deleteVersion" class="btn btn-default with-confirm" data-dialog-text="Are you sure you want to delete?">Delete version</button>
                 {% endif %}
                 {% if "Timeline_data.delete_eventbase" in permissions %}
-                    <button type="submit" name="deleteEvent" class="btn btn-default with-confirm">Delete event</button>
+                    <button type="submit" name="deleteEvent" class="btn btn-default with-confirm" data-dialog-text="Are you sure you want to delete?">Delete event</button>
                 {% endif %}
             </div>
         </form>

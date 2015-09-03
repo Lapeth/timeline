@@ -32,8 +32,6 @@ import math
 
 from django.contrib.auth.models import User
 
-
-from pprint import pprint
 from inspect import getmembers
 
 # Create your views here.
@@ -85,8 +83,6 @@ def listEvents(request):
 # Create an event (POST for saving changes)
 @login_required
 def createEvent(request):
-    print "lang"
-    print Query.listLanguages()
     errors = []
     if request.method == "POST":
         try:

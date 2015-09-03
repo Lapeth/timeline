@@ -1,15 +1,5 @@
 {% extends "list.html" %}
 
-{% block head %}
-
-<script type="text/javascript">
-    $(function(){
-        $("button.with-confirm").confirm("Are you sure you want to delete?");
-    });
-</script>
-
-{% endblock %}
-
 {% block content %}
     
     <div class="form-group form-horizontal">
@@ -73,7 +63,7 @@
                             <button class="btn btn-default" name="enabled" value="1">{% if event.enabled %}Disable{% else %}Enable{% endif %}</button>
                         {% endif %}
                         {% if "Timeline_data.delete_eventbase" in permissions %}
-                            <button type="submit" name="deleteEvent" class="btn btn-default with-confirm">Delete</button>
+                            <button type="submit" name="deleteEvent" class="btn btn-default with-confirm" data-dialog-text="Are you sure you want to delete?">Delete</button>
                         {% endif %}
                     </form>
                 </td>
