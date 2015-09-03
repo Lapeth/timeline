@@ -16,7 +16,8 @@
         
         {% stylesheet 'admin_common' %}
         {% javascript 'admin_common' %}
-		<script>
+		{% stylesheet 'admin_common' %}
+        <script>
 			$(function(){
 				var inputs = $("input[type=number]");
 				inputs.keypress(function(event){
