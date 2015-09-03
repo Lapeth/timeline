@@ -16,24 +16,7 @@
         
         {% stylesheet 'admin_common' %}
         {% javascript 'admin_common' %}
-		{% stylesheet 'admin_common' %}
-        <script>
-			$(function(){
-				var inputs = $("input[type=number]");
-				inputs.keypress(function(event){
-					var code = event.charCode;
-					if (!(code == 0 || (code >= 48 && code <= 57))) {
-						event.preventDefault();
-					}
-				});
-			});
-			
-			$(function(){
-				$(".autosubmit").change(function(){
-					$(this).parents("form").submit();
-				});
-			});
-		</script>
+
         {% block head %}{% endblock %}
     </head>
     <body>

@@ -163,7 +163,9 @@ PIPELINE_JS = {
     'admin_common': {
         'source_filenames': (
             'js/inputCheckExisting.js',
-            'js/confirmationButton.js'
+            'js/confirmationButton.js',
+            'js/inputNumber.js',
+            'js/autosubmit.js'
         ),
         'output_filename': 'js/admin_common.js',
     },
