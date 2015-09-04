@@ -130,7 +130,7 @@ class Query:
                 
         if 'q' in request.GET:
             query = Query.getQuery(request)
-            dbPath = dbPath.filter(Q(key__icontains=query) | Q(eventversion__title__icontains=query))
+            dbPath = dbPath.filter(Q(key__icontains=query) | Q(eventversion__title__icontains=query) | Q(eventversion__text__icontains=query))
             
         if 't' in request.GET:
             dbPath = Query.filterByTags(dbPath, request.GET['t'])
