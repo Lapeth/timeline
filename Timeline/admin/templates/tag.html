@@ -6,7 +6,6 @@
     $(function(){
         var tagId = {% if tag and tag.id %}{{ tag.id }}{% else %}null{% endif %};
         var interpreter = function(jsonObj) {
-            console.log(jsonObj);
             if (jsonObj && jsonObj.length) {
                 for (var i=0; i<jsonObj.length; i++) {
                     if (jsonObj[i].id !== tagId) {
@@ -34,10 +33,29 @@
                 feedback.toggleClass("sr-only", !found);
             };
         };
+        /*
         {% if new %}
             $("input[name=key]").check(function(jq){ return "/tag/?key=" + jq.val() }, interpreter, makeAction("key"));
         {% endif %}
         $("input[name=title]").check(function(jq){ return "/tag/?title=" + jq.val() }, interpreter, makeAction("title"));
+        */
+        var selectField = $("select[name=language]");
+        {% if new %}
+            var keyField = $("input[name=key]");
+            var checkKey = function(){
+                return "/tag/?key=" + keyField.val() + "&l=" + selectField.val();
+            }
+            keyField.check(checkKey, interpreter, makeAction("key"));
+            selectField.check(checkKey, interpreter, makeAction("key").bind(keyField));
+        {% endif %}
+        
+        var titleField = $("input[name=title]");
+        var checkTitle = function(){
+            return "/event/?title=" + titleField.val() + "&l=" + selectField.val();
+        }
+        titleField.check(checkTitle, interpreter, makeAction("title"));
+        selectField.check(checkTitle, interpreter, makeAction("title").bind(titleField));
+        
     });
 </script>
 

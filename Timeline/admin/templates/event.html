@@ -94,14 +94,27 @@
                 container.toggleClass(warn ? "has-warning" : "has-error", found && !empty);
                 icon.toggleClass("glyphicon-ok", !found && !empty);
                 icon.toggleClass(warn ? "glyphicon-warning-sign" : "glyphicon-remove", found && !empty);
-                feedback.html(empty ? null : (found ? "An event with this value "+(href?("<a href='"+href+"'>"):"")+"already exists" + (href?"</a>":"") : "(success)"));
+                feedback.html(empty ? null : (found ? "An event with this value "+(href?("<a href='"+href+"'>"):"")+"already exists"+(href?"</a>":"")+" for this language" : "(success)"));
                 feedback.toggleClass("sr-only", !found);
             };
         };
+        var selectField = $("select[name=language]");
         {% if new %}
-        $("input[name=key]").check(function(jq){ return "/event/?key=" + jq.val() }, interpreter, makeAction("key"));
+            var keyField = $("input[name=key]");
+            var checkKey = function(){
+                return "/event/?key=" + keyField.val() + "&l=" + selectField.val();
+            }
+            keyField.check(checkKey, interpreter, makeAction("key"));
+            selectField.check(checkKey, interpreter, makeAction("key").bind(keyField));
         {% endif %}
-        $("input[name=title]").check(function(jq){ return "/event/?title=" + jq.val() }, interpreter, makeAction("title"));
+        
+        var titleField = $("input[name=title]");
+        var checkTitle = function(){
+            return "/event/?title=" + titleField.val() + "&l=" + selectField.val();
+        }
+        titleField.check(checkTitle, interpreter, makeAction("title"));
+        selectField.check(checkTitle, interpreter, makeAction("title").bind(titleField));
+        
     });
 </script>
 

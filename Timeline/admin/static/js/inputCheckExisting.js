@@ -36,6 +36,7 @@ $.fn.extend({
             }.bind(this),0);
         };
         this.keyup(run);
+        this.change(run);
         $(run);
     }
 });

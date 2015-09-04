@@ -264,9 +264,11 @@ class Query:
             dbPath = dbPath.filter(language__code=request.GET['l'])
                 
         dbPath = dbPath.distinct()
+        print dbPath
         pag = Query.pagination(request, dbPath)
         rawtags = dbPath.order_by("key")[pag['offset'] : pag['offset'] + pag['limit']]
         tags = []
+        print rawtags
         for tag in rawtags:
             version = tag.getCurrentVersion()
             tags.append({
