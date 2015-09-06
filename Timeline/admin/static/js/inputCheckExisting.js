@@ -14,14 +14,15 @@ $.fn.extend({
             if (keytimer) {
                 clearTimeout(keytimer);
             }
-            keytimer = setTimeout(function(){
-                if (latestRequest) {
-                    latestRequest.abort();
-                    latestRequest = null;
-                }
-                if (jq.val().length) {
+            var u = $.isFunction(_url) ? _url(jq) : _url;
+            if (u && jq && jq.val().length) {
+                keytimer = setTimeout(function(){
+                    if (latestRequest) {
+                        latestRequest.abort();
+                        latestRequest = null;
+                    }
                     latestRequest = $.ajax({
-                        url: $.isFunction(_url) ? _url(jq) : _url,
+                        url: u,
                         dataType: "json",
                         success: function(responseText, status, response){
                             _action.call(jq, !!_interpreter.call(jq, response.responseJSON), false, response.responseJSON);
@@ -30,10 +31,15 @@ $.fn.extend({
                             latestRequest = null;
                         }.bind(this)
                     });
-                } else {
-                    _action.call(jq, false, true);
+                    
+                }.bind(this),0);
+            } else {
+                if (latestRequest) {
+                    latestRequest.abort();
+                    latestRequest = null;
                 }
-            }.bind(this),0);
+                _action.call(jq, false, true, null);
+            }
         };
         this.keyup(run);
         this.change(run);

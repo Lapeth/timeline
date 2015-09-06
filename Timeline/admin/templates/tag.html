@@ -39,22 +39,28 @@
         {% endif %}
         $("input[name=title]").check(function(jq){ return "/tag/?title=" + jq.val() }, interpreter, makeAction("title"));
         */
-        var selectField = $("select[name=language]");
+        var languageField = $("select[name=language]");
         {% if new %}
             var keyField = $("input[name=key]");
             var checkKey = function(){
-                return "/tag/?key=" + keyField.val() + "&l=" + selectField.val();
+                if (keyField.val() && languageField.val()) {
+                    return "/tag/?key=" + keyField.val() + "&l=" + languageField.val();
+                }
+                return null;
             }
             keyField.check(checkKey, interpreter, makeAction("key"));
-            selectField.check(checkKey, interpreter, makeAction("key").bind(keyField));
+            languageField.check(checkKey, interpreter, makeAction("key").bind(keyField));
         {% endif %}
         
         var titleField = $("input[name=title]");
         var checkTitle = function(){
-            return "/event/?title=" + titleField.val() + "&l=" + selectField.val();
+            if (titleField.val() && languageField.val()) {
+                return "/event/?title=" + titleField.val() + "&l=" + languageField.val();
+            }
+            return null;
         }
         titleField.check(checkTitle, interpreter, makeAction("title"));
-        selectField.check(checkTitle, interpreter, makeAction("title").bind(titleField));
+        languageField.check(checkTitle, interpreter, makeAction("title").bind(titleField));
         
     });
 </script>

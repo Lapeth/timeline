@@ -63,3 +63,7 @@ ul.ui-autocomplete li span.title {
 	padding-top: 0;
 	padding-bottom: 0;
 }
+
+textarea {
+   resize: none;
+}

@@ -103,22 +103,28 @@
                 feedback.toggleClass("sr-only", !found);
             };
         };
-        var selectField = $("select[name=language]");
+        var languageField = $("select[name=language]");
         {% if new %}
             var keyField = $("input[name=key]");
             var checkKey = function(){
-                return "/event/?key=" + keyField.val() + "&l=" + selectField.val();
-            }
+                if (keyField.val() && languageField.val()) {
+                    return "/event/?key=" + keyField.val() + "&l=" + languageField.val();
+                }
+                return null;
+            };
             keyField.check(checkKey, interpreter, makeAction("key"));
-            selectField.check(checkKey, interpreter, makeAction("key").bind(keyField));
+            languageField.check(checkKey, interpreter, makeAction("key").bind(keyField));
         {% endif %}
         
         var titleField = $("input[name=title]");
         var checkTitle = function(){
-            return "/event/?title=" + titleField.val() + "&l=" + selectField.val();
-        }
+            if (titleField.val() && languageField.val()) {    
+                return "/event/?title=" + titleField.val() + "&l=" + languageField.val();
+            }
+            return null;
+        };
         titleField.check(checkTitle, interpreter, makeAction("title"));
-        selectField.check(checkTitle, interpreter, makeAction("title").bind(titleField));
+        languageField.check(checkTitle, interpreter, makeAction("title").bind(titleField));
         
     });
 </script>
@@ -257,7 +263,7 @@
                     <label class="col-sm-2 control-label">Language:</label>
                     {% if new and "Timeline_data.add_eventbase" in permissions %}
                         <div class="col-sm-10">
-                            <select name="language" required class="form-control" aria-describedby="language-feedback">
+                            <select name="language" required class="form-control selectpicker" aria-describedby="language-feedback">
                                 {% for language in languages %}
                                     <option value="{{language.code}}" {% if language.id == event.language.id %}selected{% endif %}>{{language.name}}</option>
                                 {% endfor %}
@@ -318,7 +324,6 @@
                                     if (date) {
                                         var dateArr = date.split(".");
                                         if (dateArr.length === 3) {
-                                            console.log(dateArr);
                                             $("input[name=year]").val(parseInt(dateArr[0],10));
                                             $("input[name=month]").val(parseInt(dateArr[1],10));
                                             $("input[name=date]").val(parseInt(dateArr[2],10));
@@ -333,7 +338,7 @@
                     </div>
                     
                     <div class="col-sm-3">
-                        <input type="number" name="date" class="form-control" value="{{ eventVersion.getDate }}" aria-describedby="date-feedback"/>
+                        <input type="number" min="1" max="31" name="date" class="form-control" value="{{ eventVersion.getDate }}" aria-describedby="date-feedback"/>
                         <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                         <span id="date-feedback" class="feedback"/>
                     </div>
