@@ -35,7 +35,8 @@ urlpatterns = patterns('',
     url(r'^admin/password/reset/token/?(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', authviews.password_reset_confirm, {'template_name': 'user/passwordResetToken.html'}, name='password_reset_confirm'),
     url(r'^admin/password/reset/done/$', authviews.password_reset_done, {'template_name': 'user/passwordResetDone.html'}, name='password_reset_complete'),
     
-    
+    url(r'^admin/wiki/', adminviews.lookupWikipedia),
+
     url(r'^$', webclientviews.index, name='index'),
     url(r'^event/$', dataviews.listEvents, name='index'),
     url(r'^tag/$', dataviews.listTags, name='index'),

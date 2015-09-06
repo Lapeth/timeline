@@ -19,7 +19,7 @@ urlpatterns = patterns('',
     url(r'^admin/tag/create$', data.views.createTag, name='create'),
     url(r'^admin/tag/(?P<tagId>\d+)$', data.views.editTag, name='edit'),
     url(r'^admin/tag/(?P<tagId>\d+)/(?P<revision>\d+)$', data.views.editTag, name='edit'),
-    
-    
+
+
     url(r'^/$', webclient.views.index),
 )

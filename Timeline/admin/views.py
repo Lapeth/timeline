@@ -34,6 +34,8 @@ from django.contrib.auth.models import User
 
 from inspect import getmembers
 
+import requests
+
 # Create your views here.
 
 pathPrefix = "/admin"
@@ -331,3 +333,50 @@ def destroyUser(request, template_name='destroyUser.html',
         request.current_app = current_app
 
     return TemplateResponse(request, template_name, context)
+
+#------------------------------------------------------------------------------------
+
+@login_required
+def lookupWikipedia(request):
+    
+    def excludeWikiItem(item):
+        excludeDescriptionBeginnings = ['This is a redirect from a title with another method of capitalisation.']
+        for exclusion in excludeDescriptionBeginnings:
+            if item['description'].startswith(exclusion):
+                return True
+        return False
+    
+    if request.method == "GET" and 'q' in request.GET and 'l' in request.GET:
+        query = request.GET['q']
+        language = request.GET['l']
+        if Query.hasLanguage(language):
+            prefix = "https://%s.wikipedia.org" % language
+            wikiprefix = "%s/wiki/" % prefix
+            data = requests.get("%s/w/api.php" % prefix, params={
+                'action': 'opensearch',
+                'format': 'json',
+                'namespace': 0,
+                'limit': 10,
+                'search': query
+            })
+            print data
+            if data:
+                obj = data.json()
+                if obj:
+                    items = []
+                    term = obj[0]
+                    titles = obj[1]
+                    descriptions = obj[2]
+                    links = obj[3]
+                    count = min(len(titles), len(descriptions), len(links))
+                    print links
+                    for i in range(0, count-1):
+                        item = {'title':titles[i],
+                                    'description':descriptions[i],
+                                    'links':links[i]}
+                        if links[i].startswith(wikiprefix):
+                            item['key'] = links[i][len(wikiprefix):]
+                        if not excludeWikiItem(item):
+                            items.append(item)
+                        
+                    return HttpResponse(JSONSerializer().serialize(items))

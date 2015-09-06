@@ -48,3 +48,18 @@ ul.errorlist li {
 	list-style-type: none;
 	color: #a94442;
 }
+
+ul.ui-autocomplete li span.desc {
+	font-size: 0.75em;
+	color: #333;
+}
+
+ul.ui-autocomplete li span.title {
+	font-size: 1em;
+	color: #000;
+}
+
+#wikiButton {
+	padding-top: 0;
+	padding-bottom: 0;
+}

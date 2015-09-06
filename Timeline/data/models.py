@@ -374,6 +374,7 @@ class EventBase(models.Model):
 		version.title = data.get("title")
 		version.text = data.get("text")
 		version.date = Time(data.get("year"), data.get("month"), data.get("date"))
+		version.wiki = data.get("wiki", None)
 		if not version.title:
 			raise Exception("No title defined in Event Version")
 		if not version.text:

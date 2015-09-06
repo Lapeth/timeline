@@ -87,6 +87,15 @@ class Query:
     def listLanguages():
         return Language.objects.order_by('indexing').all()
     
+    @staticmethod
+    def hasLanguage(code):
+        languages = Query.listLanguages()
+        for lang in languages:
+            if lang.code == code:
+                return True
+        return False
+    
+    
 
     @staticmethod
     def filterByTags(dbPath, tagQuery):

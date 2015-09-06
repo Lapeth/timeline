@@ -10,6 +10,15 @@
 <link rel="stylesheet" type="text/css" href="{% static "3rdparty/datepicker/css/datepicker.css" %}"/>
 <script type="text/javascript" src="{% static "3rdparty/datepicker/js/bootstrap-datepicker.js" %}"></script>
 
+<link rel="stylesheet" type="text/css" href="{% static "3rdparty/jquery-ui/jquery-ui.css" %}"></link>
+<script type="text/javascript" src="{% static "3rdparty/jquery-ui/jquery-ui.min.js" %}"></script>
+
+<script type="text/javascript">
+    function getLanguage() {
+        return $("select[name=language]").val() || "{{ event.language.code }}";
+    }
+</script>
+
 <script type="text/javascript">
     $(function(){
         
@@ -42,7 +51,7 @@
                 data: {
                     q: query,
                     f: "json",
-                    l: $("select[name=language]").val()
+                    l: getLanguage()
                 },
                 dataType: "json",
                 success: function(results, status, response) {
@@ -114,6 +123,73 @@
         }
         titleField.check(checkTitle, interpreter, makeAction("title"));
         selectField.check(checkTitle, interpreter, makeAction("title").bind(titleField));
+        
+    });
+</script>
+
+
+<script type="text/javascript">
+    $(function(){
+        
+        var updateWikiButton = function(){
+            var key = $('input[name=wiki]').val();
+            $("#wikiButton").attr("href", key ? ("https://" + getLanguage() + ".wikipedia.org/wiki/" + key) : null);
+        };
+        var updateWikiPrefix = function(){
+            $("#wikiPrefix").text("https://" + getLanguage() + ".wikipedia.org/wiki/");
+        };
+        
+        $('input[name=wiki]').autocomplete({
+            source: function(request, response) {
+                $.ajax({
+                    url: "/admin/wiki",
+                    data: {
+                        q: request.term,
+                        l: getLanguage()
+                    },
+                    dataType: "json",
+                    complete: function(resp){
+                        if (resp && resp.status === 200) {
+                            response(resp.responseJSON);
+                        }
+                    }.bind(this),
+                    error: function(resp) {
+                        if (window.console && console.error) {
+                            console.error(resp.status + ": " + resp.statusText);
+                        }
+                        response([]);
+                    }
+                });
+            }.bind(this),
+            select: function(event, ui){
+                this.value = ui.item.key;
+                updateWikiButton();
+                return false;
+            }
+        }).autocomplete("instance")._renderItem = function(ul, item) {
+            var desc = "";
+            if (item.description && item.description.length > 0) {
+                var pIndex = item.description.indexOf(".");
+                if (pIndex > 0 && pIndex < 100) {
+                    desc = item.description.substring(0,pIndex+1);
+                } else {
+                    pIndex = item.description.lastIndexOf(" ",100);
+                    if (pIndex > 0) {
+                        desc = item.description.substring(0,pIndex) + "...";
+                    } else {
+                        desc = item.description.substring(0,100) + "...";
+                    }
+                }
+            }
+            return $("<li><a><span class='title'>" + item.title + "</span><br/><span class='desc'>" + desc + "</span></a></li>").appendTo(ul);
+        };
+        
+        
+        updateWikiButton();
+        updateWikiPrefix();
+        $('input[name=wiki]').keyup(updateWikiButton);
+        $("select[name=language]").change(updateWikiButton);
+        $("select[name=language]").change(updateWikiPrefix);
         
     });
 </script>
@@ -283,6 +359,30 @@
                     </div>
                 {% endif %}
             </div>
+            
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Wikipedia reference:</label>
+                    {% if "Timeline_data.add_eventversion" in permissions %}
+                        <div class="col-sm-10">
+                            <div class="input-group">
+                                <div class="input-group-addon" id="wikiPrefix"></div>
+                                <input type="text" name="wiki" class="form-control" aria-describedby="wiki-feedback" value="{{ eventVersion.wiki|default:"" }}"/>
+                                <a id="wikiButton" class="input-group-addon" target="_blank"><img src="/static/img/wikipedia-24.png"/></a>
+                            </div>
+                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                            <span id="wiki-feedback" class="feedback"/>
+                        </div>
+                    {% else %}
+                        <div class="col-sm-10 form-inline-text">
+                            {% if eventVersion.wiki %}
+                                https://{{ event.language.code }}.wikipedia.org/wiki/{{ eventVersion.wiki }}
+                                <a id="wikiButton" class="btn btn-default" target="_blank"><img src="/static/img/wikipedia-24.png"/></a>
+                            {% else %}
+                                No reference set
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
            
             
             {% if "Timeline_data.add_eventversion" in permissions %}
