@@ -29,7 +29,7 @@
                 container.toggleClass(warn ? "has-warning" : "has-error", found && !empty);
                 icon.toggleClass("glyphicon-ok", !found && !empty);
                 icon.toggleClass(warn ? "glyphicon-warning-sign" : "glyphicon-remove", found && !empty);
-                feedback.html(empty ? null : (found ? "A tag with this value "+(href?("<a href='"+href+"'>"):"")+"already exists" + (href?"</a>":"") : "(success)"));
+                feedback.html(empty ? null : (found ? "A tag with this value "+(href?("<a href='"+href+"'>"):"") + "already exists" + (href?"</a>":"") + " for this language" : "(success)"));
                 feedback.toggleClass("sr-only", !found);
             };
         };
@@ -55,7 +55,7 @@
         var titleField = $("input[name=title]");
         var checkTitle = function(){
             if (titleField.val() && languageField.val()) {
-                return "/event/?title=" + titleField.val() + "&l=" + languageField.val();
+                return "/tag/?title=" + titleField.val() + "&l=" + languageField.val();
             }
             return null;
         }

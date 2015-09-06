@@ -359,7 +359,6 @@ def lookupWikipedia(request):
                 'limit': 10,
                 'search': query
             })
-            print data
             if data:
                 obj = data.json()
                 if obj:

@@ -22,7 +22,6 @@ class TimeFormWidget(forms.MultiWidget):
 			year = value / 1000
 			day = value % 1000
 			isLeapYear = Time.isLeapYear(year)
-			print "year: %d, day: %d" % (year, day)
 			return [year, Time.getMonth(day, isLeapYear), Time.getDate(day, isLeapYear)]
 		return [None, None, None]
 	
