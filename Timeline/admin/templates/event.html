@@ -13,11 +13,7 @@
 <link rel="stylesheet" type="text/css" href="{% static "3rdparty/jquery-ui/jquery-ui.css" %}"></link>
 <script type="text/javascript" src="{% static "3rdparty/jquery-ui/jquery-ui.min.js" %}"></script>
 
-<script type="text/javascript">
-    function getLanguage() {
-        return $("select[name=language]").val() || "{{ event.language.code }}";
-    }
-</script>
+<script type="text/javascript" src="{% static "js/language.js" %}"></script>
 
 <script type="text/javascript">
     $(function(){
@@ -51,7 +47,7 @@
                 data: {
                     q: query,
                     f: "json",
-                    l: getLanguage()
+                    l: language.get()
                 },
                 dataType: "json",
                 success: function(results, status, response) {
@@ -69,7 +65,7 @@
         });
         runTagSearch("",$("#tagChooser"),false);
         
-        $("select[name=language]").change(function(){
+        language.change(function(){
             runTagSearch($(".chooser-search").val(), $(".chooser"), true);
         });
     });
@@ -133,10 +129,10 @@
         
         var updateWikiButton = function(){
             var key = $('input[name=wiki]').val();
-            $("#wikiButton").attr("href", key ? ("https://" + getLanguage() + ".wikipedia.org/wiki/" + key) : null);
+            $("#wikiButton").attr("href", key ? ("https://" + language.get() + ".wikipedia.org/wiki/" + key) : null);
         };
         var updateWikiPrefix = function(){
-            $("#wikiPrefix").text("https://" + getLanguage() + ".wikipedia.org/wiki/");
+            $("#wikiPrefix").text("https://" + language.get() + ".wikipedia.org/wiki/");
         };
         
         $('input[name=wiki]').autocomplete({
@@ -145,7 +141,7 @@
                     url: "/admin/wiki",
                     data: {
                         q: request.term,
-                        l: getLanguage()
+                        l: language.get()
                     },
                     dataType: "json",
                     complete: function(resp){
@@ -188,8 +184,8 @@
         updateWikiButton();
         updateWikiPrefix();
         $('input[name=wiki]').keyup(updateWikiButton);
-        $("select[name=language]").change(updateWikiButton);
-        $("select[name=language]").change(updateWikiPrefix);
+        language.change(updateWikiButton);
+        language.change(updateWikiPrefix);
         
     });
 </script>
@@ -272,6 +268,7 @@
                         <div class="col-sm-10 form-inline-text">
                             {{ event.language.name }}
                         </div>
+                        <input type="hidden" name="language" value="{{ event.language.code }}"/>
                     {% endif %}
                 </div>
             {% endif %}
