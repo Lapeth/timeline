@@ -131,7 +131,7 @@
                     <label class="col-sm-2 control-label">Language:</label>
                     {% if new and "Timeline_data.add_tagbase" in permissions %}
                         <div class="col-sm-10">
-                            <select name="language" required class="form-control" aria-describedby="language-feedback">
+                            <select name="language" required class="form-control selectpicker" aria-describedby="language-feedback">
                                 {% for language in languages %}
                                     <option value="{{language.code}}" {% if language.id == tag.language.id %}selected{% endif %}>{{language.name}}</option>
                                 {% endfor %}
