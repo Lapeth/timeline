@@ -56,7 +56,7 @@ var Util = {
 
 	string: {
 		templateInsert: function(templateString, data, failIfNotFound) {
-			var replaced = templateString.replace(/\$\{([^\}]+)\}/,function(matched, group1, offset, text){
+			var replaced = templateString.replace(/\$\{([^\}]+)\}/g,function(matched, group1, offset, text){
 				var parts = group1.split("."),
 					current = data,
 					i;

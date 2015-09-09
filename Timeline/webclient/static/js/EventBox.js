@@ -434,7 +434,7 @@ EventBoxButtons.push({
 	id: "wikipedia",
 	prerequisite: "${event.wikipedia}",
 	className: "wikipedia",
-	link: "https://en.wikipedia.org/wiki/${event.wikipedia}",
+	link: "https://${event.languageCode}.wikipedia.org/wiki/${event.wikipedia}",
 });
 /*
 EventBoxButtons.push({

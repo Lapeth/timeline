@@ -161,7 +161,8 @@ class Query:
                                'enabled': event.enabled,
                                'year': version.getYear(),
                                'day': version.getDay(),
-                               'language': event.language.code if shorten else event.language
+                               'language': event.language.code if shorten else event.language,
+                               'wiki': version.wiki
                                })
           
         return (events, pag)

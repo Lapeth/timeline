@@ -85,7 +85,6 @@ UI.prototype.onScroll = function(ev, x){
 	x = (x === undefined) ? ev.clientX : x;
 	if ((this.resolution >= 2 && !zoomout) || (this.resolution <= 107374182400 && zoomout)) {
 		var newCenterPos = zoomout ? (2 * this._midpoint - x) : ((this._midpoint + x) * 0.5);
-		console.log(newCenterPos);
 		this.center = this._getPositionTime(newCenterPos);
 		this.setResolution(this.resolution * (zoomout ? 2 : 0.5));
 	}

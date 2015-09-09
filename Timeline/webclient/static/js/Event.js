@@ -1,4 +1,3 @@
-;
 var Event = function(obj) {
 	if (!arguments.length) {
 		return;
@@ -7,7 +6,8 @@ var Event = function(obj) {
 	this.time = obj.time || new Time(obj.year, 0, obj.day);
 	this.title = obj.title || "";
 	this.text = obj.text || "";
-	this.wikipedia = obj.wikipedia || "";
+	this.languageCode = obj.language || "en";
+	this.wikipedia = obj.wiki || "";
 };
 
 Event.prototype._getJSONObject = function() {

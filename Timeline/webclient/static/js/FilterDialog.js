@@ -143,6 +143,5 @@ FilterDialog.prototype.layout = function() {
 FilterDialog.prototype.changeLanguage = function(newLanguageCode) {
 	this._removeAllFilters();
 	this._language = newLanguageCode;
-	console.log(this._language);
 	Util.cookie.set("language", newLanguageCode);
 }
