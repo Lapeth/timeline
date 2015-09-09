@@ -5,7 +5,7 @@ FilterDialog = function(param){
 	this._filterContainer = this.createElement("div",null,"FilterContainer",true);
 	this._languageChooser = this.createElement("select","language",null,true);
 	this._topFilter = new AndFilter(null, null);
-	this._language = "en";
+	this._language = window.language.current || "en";
 	this._topFilter.addUpdateCallback(function(filter) {
 		if (filter.isEmpty()) {
 			window.ui.setEvents([]);
@@ -143,5 +143,6 @@ FilterDialog.prototype.layout = function() {
 FilterDialog.prototype.changeLanguage = function(newLanguageCode) {
 	this._removeAllFilters();
 	this._language = newLanguageCode;
+	console.log(this._language);
 	Util.cookie.set("language", newLanguageCode);
 }
