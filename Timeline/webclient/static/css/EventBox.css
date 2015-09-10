@@ -67,6 +67,7 @@
 	width: 100%;
 	height: 173px;
 	overflow: auto;
+	color: #333;
 }
 .EventBox input.time {
 	width: 100px;
@@ -109,4 +110,10 @@
 }
 .EventBox .EventBoxButton.edit {
 	background-image: url("../img/edit.png");
+}
+
+.EventBox .time {
+	font-size: 9pt;
+	font-family: Helvetica, sans-serif;
+	color: #333;
 }
