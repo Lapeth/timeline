@@ -40,13 +40,13 @@ EventBox.prototype._setupDisplay = function(){
 	if (!this.display) {
 		var display = this.display = this.createElement("div",null,"display",this.box),
 			title = this.title = this.createElement("h1",null,null,display),
-			time = this.time = this.createElement("span",null,null,display),
+			time = this.time = this.createElement("span",null,"time",display),
 			text = this.text = this.createElement("p",null,null,display),
 			event = this.event;
 		title.text(event.title);
 		time.text(event.time.readable());
 		text.text(event.text);
-		time.hide();
+		//time.hide();
 
 		title.click(function(){
 			if (this._state === EventBox.STATE_COLLAPSED) {
