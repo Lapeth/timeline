@@ -66,6 +66,12 @@ FilterDialog = function(param){
 			this._addFilter(ui.item.value);
 			this._input.val("");
 			return false;
+		}.bind(this),
+		open: function() {
+			this._input.addClass("haspopup")
+		}.bind(this),
+		close: function() {
+			this._input.removeClass("haspopup");
 		}.bind(this)
 	});
 	
@@ -82,6 +88,15 @@ FilterDialog = function(param){
 	}
 	this._languageChooser.change(function(event) {
 		this.changeLanguage(event.target.value);
+	}.bind(this));
+	
+	this._languageChooser.selectmenu({
+		position: { my : "left bottom", at: "left top" }
+	});
+	this.on("click focus",function(ev){
+		if (!$.contains($("#language-button").get(0), ev.target)) {
+			$("#language").selectmenu("close");
+		}
 	}.bind(this));
 	
 	
