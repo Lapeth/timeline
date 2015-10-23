@@ -178,9 +178,10 @@ NPM_DESTINATION_PREFIX = 'thirdparty'
 NPM_FILE_PATTERNS = {
     'jquery': ['dist/jquery.min.js'],
     'jquery-mousewheel': ['jquery.mousewheel.js'],
+    'jquery-ui-bundle': ['jquery-ui.min.js', 'jquery-ui.min.css', 'images/*'],
     'bootstrap': ['dist/js/bootstrap.min.js', 'dist/css/bootstrap.min.css', 'dist/fonts/*'],
     'bootstrap-datepicker': ['dist/js/bootstrap-datepicker.min.js', 'dist/css/bootstrap-datepicker.min.css', 'dist/locales/*'],
     'bootstrap-select': ['dist/js/bootstrap-select.min.js', 'dist/css/bootstrap-select.min.css'],
     'bootbox': ['bootbox.min.js'],
-    'typeahead.js': ['dist/typeahead.bundle.min.js']
+    #'corejs-typeahead': ['dist/typeahead.jquery.min.js']
 }

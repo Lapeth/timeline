@@ -8,6 +8,6 @@
     "bootstrap-datepicker": "latest",
     "bootstrap-select": "latest",
     "bootbox": "latest",
-    "typeahead.js": "latest"
+    "jquery-ui-bundle": ">=1.11.1"
   }
 }
