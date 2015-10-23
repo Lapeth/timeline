@@ -1,0 +1,13 @@
+{
+  "name": "timeline",
+  "version": "1.0.0",
+  "dependencies": {
+    "jquery": "latest",
+    "jquery-mousewheel": "latest",
+    "bootstrap": "latest",
+    "bootstrap-datepicker": "latest",
+    "bootstrap-select": "latest",
+    "bootbox": "latest",
+    "typeahead.js": "latest"
+  }
+}

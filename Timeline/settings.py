@@ -104,6 +104,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'pipeline.finders.PipelineFinder',
+    'npm.finders.NpmFinder',
 )
 
 PIPELINE_STORAGE = 'pipeline.storage.PipelineFinderStorage'
@@ -171,3 +172,15 @@ PIPELINE_JS = {
     },
 }
 
+
+NPM_PREFIX_PATH = '/home/lars/Projekt/timeline/Timeline/thirdparty'
+NPM_DESTINATION_PREFIX = 'thirdparty'
+NPM_FILE_PATTERNS = {
+    'jquery': ['dist/jquery.min.js'],
+    'jquery-mousewheel': ['jquery.mousewheel.js'],
+    'bootstrap': ['dist/js/bootstrap.min.js', 'dist/css/bootstrap.min.css', 'dist/fonts/*'],
+    'bootstrap-datepicker': ['dist/js/bootstrap-datepicker.min.js', 'dist/css/bootstrap-datepicker.min.css', 'dist/locales/*'],
+    'bootstrap-select': ['dist/js/bootstrap-select.min.js', 'dist/css/bootstrap-select.min.css'],
+    'bootbox': ['bootbox.min.js'],
+    'typeahead.js': ['dist/typeahead.bundle.min.js']
+}

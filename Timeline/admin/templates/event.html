@@ -7,11 +7,10 @@
 <link rel="stylesheet" type="text/css" href="{% static "css/chooser.css" %}"/>
 <script type="text/javascript" src="{% static "js/chooser.js" %}"></script>
 
-<link rel="stylesheet" type="text/css" href="{% static "3rdparty/datepicker/css/datepicker.css" %}"/>
-<script type="text/javascript" src="{% static "3rdparty/datepicker/js/bootstrap-datepicker.js" %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static "thirdparty/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" %}"/>
+<script type="text/javascript" src="{% static "thirdparty/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js" %}"></script>
 
-<link rel="stylesheet" type="text/css" href="{% static "3rdparty/jquery-ui/jquery-ui.css" %}"></link>
-<script type="text/javascript" src="{% static "3rdparty/jquery-ui/jquery-ui.min.js" %}"></script>
+<script type="text/javascript" src="{% static "thirdparty/typeahead.js/dist/typeahead.bundle.min.js" %}"></script>
 
 <script type="text/javascript" src="{% static "js/language.js" %}"></script>
 
@@ -141,7 +140,69 @@
             $("#wikiPrefix").text("https://" + language.get() + ".wikipedia.org/wiki/");
         };
         
-        $('input[name=wiki]').autocomplete({
+        $('input[name=wiki]').typeahead({
+            hint: false,
+            classNames: {
+                menu: "dropdown-menu",
+                cursor: "focused"
+            }
+        }, {
+            source: function(query, syncResults, response) {
+                $.ajax({
+                    url: "/admin/wiki",
+                    data: {
+                        q: query,
+                        l: language.get()
+                    },
+                    dataType: "json",
+                    complete: function(resp){
+                        if (resp && resp.status === 200) {
+                            response(resp.responseJSON);
+                        }
+                    }.bind(this),
+                    error: function(resp) {
+                        if (window.console && console.error) {
+                            console.error(resp.status + ": " + resp.statusText);
+                        }
+                        response([]);
+                    }
+                });
+            },
+            async: true,
+            limit: 10,
+            display: function(item){
+                return item.title;
+            },
+            templates: {
+                suggestion: function(item) {
+                    var desc = "";
+                    if (item.description && item.description.length > 0) {
+                        var pIndex = item.description.indexOf(".");
+                        if (pIndex > 0 && pIndex < 100) {
+                            desc = item.description.substring(0,pIndex+1);
+                        } else {
+                            pIndex = item.description.lastIndexOf(" ",100);
+                            if (pIndex > 0) {
+                                desc = item.description.substring(0,pIndex) + "...";
+                            } else {
+                                desc = item.description.substring(0,100) + "...";
+                            }
+                        }
+                    }
+                    return "<div id='wikiAutocomplete_" + item.key + "'><a tabIndex='0'><span class='title'>" + item.title + "</span><br/><span class='desc'>" + desc + "</span></a></div>";
+                }
+            }
+        });
+        
+        /*$("input[name=wiki]").bind("typeahead:cursorchange",function(event, item){
+            if (item) {
+                var el = $("#wikiAutocomplete_" + item.key);
+                el.addClass("focused");
+            }
+        });*/
+        
+        //$(".twitter-typeahead").css({display:"inline"});
+        /*$('input[name=wiki]').autocomplete({
             source: function(request, response) {
                 $.ajax({
                     url: "/admin/wiki",
@@ -184,7 +245,23 @@
                 }
             }
             return $("<li><a><span class='title'>" + item.title + "</span><br/><span class='desc'>" + desc + "</span></a></li>").appendTo(ul);
-        };
+        };*/
+        
+        /*$('input[name=wiki]').bind("typeahead:render", function(){
+            var container = $(this).parent().find(".dropdown-menu").children().first();
+            console.log(container.prop("nodeName"));
+            if (container.prop("nodeName").toLowerCase() !== "ul") {
+                var newContainer = $("<ul>");
+                container.parent().append(newContainer);
+                newContainer.append(container.children());
+                console.log("container",container);
+                console.log("newContainer",newContainer);
+                setTimeout(function(){
+                    container.remove();
+                },0);
+                
+            }
+        });*/
         
         
         updateWikiButton();
