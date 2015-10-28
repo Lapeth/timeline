@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="{% static "thirdparty/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" %}"/>
 <script type="text/javascript" src="{% static "thirdparty/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js" %}"></script>
 
-<script type="text/javascript" src="{% static "thirdparty/typeahead.js/dist/typeahead.bundle.min.js" %}"></script>
+<script type="text/javascript" src="{% static "thirdparty/corejs-typeahead/dist/typeahead.jquery.min.js" %}"></script>
 
 <script type="text/javascript" src="{% static "js/language.js" %}"></script>
 
@@ -395,7 +395,7 @@
                         </button>
                         <script>
                             $(function(){
-                                $("#datepicker").datepicker({viewMode:2})                         
+                                $("#datepicker").datepicker({startView:2})                         
                                 .on('changeDate', function(ev){
                                     var date = $('#datepicker').data('date');
                                     if (date) {
