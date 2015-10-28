@@ -49,12 +49,12 @@ ul.errorlist li {
 	color: #a94442;
 }
 
-ul.ui-autocomplete li span.desc {
+.dropdown-menu .tt-suggestion span.desc {
 	font-size: 0.75em;
 	color: #333;
 }
 
-ul.ui-autocomplete li span.title {
+.dropdown-menu .tt-suggestion span.title {
 	font-size: 1em;
 	color: #000;
 }

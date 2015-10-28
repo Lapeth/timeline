@@ -60,3 +60,48 @@ body, body.modal-open {
 .btn.look-disabled {
     opacity: 0.65;
 }
+    
+.twitter-typeahead:not(:first-child):not(:last-child) .input-group-addon,
+.twitter-typeahead:not(:first-child):not(:last-child) .input-group-btn,
+.input-group .twitter-typeahead:not(:first-child):not(:last-child) .form-control {
+    border-radius: 0;
+}
+
+.input-group .twitter-typeahead {
+    width: 100%;
+}
+
+.input-group {
+    font-size: 0;
+}
+
+.input-group * {
+    font-size: 14px;
+}
+
+.input-group-addon {
+    height: 34px;
+}
+
+
+
+
+.tt-suggestion a {
+    cursor: pointer;
+}
+.tt-suggestion > a {
+    clear: both;
+    color: #333;
+    display: block;
+    font-weight: normal;
+    line-height: 1.42857;
+    padding: 3px 20px;
+    white-space: nowrap;
+}
+
+.tt-suggestion > a:hover,
+.tt-suggestion.focused > a {
+    background-color: #f5f5f5;
+    color: #262626;
+    text-decoration: none;
+}
