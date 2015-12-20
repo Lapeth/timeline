@@ -3,9 +3,8 @@
 {% block content %}
     
     <div class="form-group form-horizontal">
-        {% include "language.html" with lang=lang languages=languages formparams=formparams %}
-        {% include "search.html" with language=language query=query formparams=formparams %}
-    </div>    
+        {% include "search.html" with language=language lang=lang languages=languages query=query formparams=formparams %}
+    </div>
     
     <div class="pull-left actions">
         {% if "Timeline_data.add_tagbase" in permissions and "Timeline_data.add_tagversion" in permissions %}
