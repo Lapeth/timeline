@@ -1,0 +1,12 @@
+<form method="get" action="" class="">
+    <div class="form-group col-sm-2">
+        <select name="l" class="form-control selectpicker autosubmit">
+            <option value="">Any language</option>
+            {% for lang in languages %}
+                <option value="{{ lang.code }}" {% if lang.code == language %}selected{% endif %}>{{ lang.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <input type="hidden" name="q" value="{{ query }}"/>
+    {% include "extrafields.html" with fields=formparams %}
+</form>

@@ -1,0 +1,15 @@
+<form method="get" action="" class="">
+    <div class="form-group">
+        <div class="col-sm-1">
+            <label class="control-label">Search:</label>
+        </div>
+        <div class="col-sm-6">
+            <input type="text" name="q" class="form-control" {% if query %}value="{{ query }}"{% endif %}/>
+        </div>
+        <div class="col-sm-2">
+            <button class="btn btn-default">Search</button>
+        </div>
+    </div>
+    <input type="hidden" name="l" value="{{ language|default:"" }}"/>
+    {% include "extrafields.html" with fields=formparams %}
+</form>
