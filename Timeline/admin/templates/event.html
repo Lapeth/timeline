@@ -93,7 +93,7 @@
                     href,
                     warn = _field === "title"
                 if (list && list.length) {
-                    href = "/admin/event/" + list[0].id;
+                    href = "/admin/event/" + list[0].id + "?{{ urlparams }}";
                 }
                 container.toggleClass(warn ? "has-warning" : "has-error", found && !empty);
                 icon.toggleClass("glyphicon-ok", !found && !empty);
@@ -107,7 +107,7 @@
             var keyField = $("input[name=key]");
             var checkKey = function(){
                 if (keyField.val() && languageField.val()) {
-                    return "/event/?key=" + keyField.val() + "&l=" + languageField.val();
+                    return "/event/?key=" + keyField.val() + "&l=" + languageField.val() + "&{{ urlparams }}";
                 }
                 return null;
             };
@@ -118,7 +118,7 @@
         var titleField = $("input[name=title]");
         var checkTitle = function(){
             if (titleField.val() && languageField.val()) {    
-                return "/event/?title=" + titleField.val() + "&l=" + languageField.val();
+                return "/event/?title=" + titleField.val() + "&l=" + languageField.val() + "&{{ urlparams }}";
             }
             return null;
         };
@@ -297,7 +297,7 @@
                     {% for revision,date in revisions.items %}
                         <tr {% if revision == displayedRevision %}class="active"{% endif %}>
                             <td>{{ revision }}</td>
-                            <td><a href="/admin/event/{{ event.id }}/{{ revision }}">{{ date | date }}</a></td>
+                            <td><a href="/admin/event/{{ event.id }}/{{ revision }}/?{{ urlparams }}">{{ date | date }}</a></td>
                             <td class="text-center">
                                 {% if revision == currentRevision %}
                                     <input type="radio" checked="checked"/>
@@ -493,13 +493,13 @@
                 <label class="col-sm-2 control-label">Tags:</label>
                 <div class="col-sm-10 form-inline-text">
                     {% for tag in eventVersion.tags.all %}
-                        <a class="btn btn-primary btn-xs{% if not tag.enabled %} look-disabled{% endif %}" {% if not tag.enabled %}title="This tag is disabled"{% endif %} href="{{ tag.getEditPath }}">{{ tag.getCurrentVersion.title }}</a>
+                        <a class="btn btn-primary btn-xs{% if not tag.enabled %} look-disabled{% endif %}" {% if not tag.enabled %}title="This tag is disabled"{% endif %} href="{{ tag.getEditPath }}?{{ urlparams }}">{{ tag.getCurrentVersion.title }}</a>
                     {% endfor %}
                 </div>
             {% endif %}
             
             <div class="pull-right">
-                <a class="btn btn-default" href="/admin/event/">Close</a>
+                <a class="btn btn-default" href="/admin/event/?{{ urlparams }}">Close</a>
                 {% if "Timeline_data.add_eventversion" in permissions %}
                     {% if not new %}
                         <button type="submit" name="save" class="btn btn-default">Save</button>

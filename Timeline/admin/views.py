@@ -79,7 +79,7 @@ def listEvents(request):
     data["permissions"] = request.user.get_all_permissions()
     data["languages"] = Query.listLanguages()
     data["language"] = request.GET.get("l")
-    return render(request, "events.html", data, context_instance=RequestContext(request))
+    return output(request, "events.html", data, context_instance=RequestContext(request))
     
 
 
@@ -94,7 +94,7 @@ def createEvent(request):
             return HttpResponseRedirect("%s/event/" % pathPrefix)
         except PermissionDenied as e:
             errors.append(e)
-    return render(request, "event.html", {
+    return output(request, "event.html", {
         "nav":"events",
         "user": request.user,
         "new": True,
@@ -140,7 +140,7 @@ def editEvent(request, eventId, revision=None):
     
     user = request.user
 
-    return render(request, "event.html", {
+    return output(request, "event.html", {
         "event": event,
         "eventVersion": eventVersion,
         "revisions": revisions,
@@ -167,7 +167,7 @@ def listTags(request):
     
     languages = Query.listLanguages()
     
-    return render(request, "tags.html", {
+    return output(request, "tags.html", {
         "tags": tags,
         "nav": "tags",
         "pagination": pagination,
@@ -188,7 +188,7 @@ def createTag(request):
             return HttpResponseRedirect("%s/tag/" % pathPrefix)
         except PermissionDenied as e:
             errors.append(e)
-    return render(request, "tag.html", {
+    return output(request, "tag.html", {
         "nav":"tags",
         "user": request.user,
         "new": True,
@@ -233,7 +233,7 @@ def editTag(request, tagId, revision=None):
         for version in tag.getVersions():
             revisions[version.revision] = version.created
 
-        return render(request, "tag.html", {
+        return output(request, "tag.html", {
             "tag": tag,
             "tagVersion": tagVersion,
             "revisions": revisions,
@@ -379,3 +379,13 @@ def lookupWikipedia(request):
                             items.append(item)
                         
                     return HttpResponse(JSONSerializer().serialize(items))
+                
+def output(request, template, data, **kwargs):
+    noheader = request.GET.get("header") == '0'
+    data['noheader'] = noheader
+    urlparams = {}
+    if noheader:
+        urlparams['header'] = 0
+    data['urlparams'] = "&".join(["%s=%s" % (key, urlparams[key]) for key in urlparams])
+    data['formparams'] = urlparams
+    return render(request, template, data, **kwargs)

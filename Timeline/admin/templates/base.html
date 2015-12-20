@@ -20,6 +20,7 @@
         {% block head %}{% endblock %}
     </head>
     <body>
+		{% if not noheader %}
         <header id="top" class="navbar navbar-static-top bs-docs-nav" role="banner">
             <div class="container">
                 <div class="navbar-header">
@@ -28,10 +29,10 @@
                 <nav class="collapse navbar-collapse bs-navbar-collapse pull-left">
                     <ul class="nav navbar-nav">
                         <li {% if nav == "events" %}class="active"{% endif %}>
-                            <a href="/admin/event/">Events</a>
+                            <a href="/admin/event/?{{ urlparams }}">Events</a>
                         </li>
                         <li {% if nav == "tags" %}class="active"{% endif %}>
-                            <a href="/admin/tag/">Tags</a>
+                            <a href="/admin/tag/?{{ urlparams }}">Tags</a>
                         </li>
                     </ul>
                 </nav>
@@ -42,9 +43,9 @@
                         <li>
                             <a href="#usermenu" id="userMenuButton" class="dropdown-toggle" data-toggle="dropdown">{{ user }}</a>
 							<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="userMenuButton">
-								<li role="presentation"><a role="menuitem" tabindex="-1" href="/admin/password/change/">Change password</a></li>
-								<li role="presentation"><a role="menuitem" tabindex="-1" href="/admin/logout/">Log out</a></li>
-								<li role="presentation"><a role="menuitem" tabindex="-1" href="/admin/signout/">Delete account</a></li>
+								<li role="presentation"><a role="menuitem" tabindex="-1" href="/admin/password/change/?{{ urlparams }}">Change password</a></li>
+								<li role="presentation"><a role="menuitem" tabindex="-1" href="/admin/logout/?{{ urlparams }}">Log out</a></li>
+								<li role="presentation"><a role="menuitem" tabindex="-1" href="/admin/signout/?{{ urlparams }}">Delete account</a></li>
 							</ul>
                         </li>
 						{% endif %}
@@ -53,6 +54,7 @@
 				
             </div>
         </header>
+	{% endif %}
         
         <div class="container">
 			

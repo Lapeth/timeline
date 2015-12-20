@@ -13,6 +13,7 @@
                 </select>
             </div>
             <input type="hidden" name="q" value="{{ query }}"/>
+            {% include "extrafields.html" with fields=formparams %}
         </form>
         <form method="get" action="/admin/event/" class="">
             <div class="form-group">
@@ -27,6 +28,7 @@
                 </div>
             </div>
             <input type="hidden" name="l" value="{{ language|default:"" }}"/>
+            {% include "extrafields.html" with fields=formparams %}
         </form>
     </div>    
     
@@ -36,11 +38,11 @@
         {% endif %}
     </div>
     <div class="pull-right actions">
-        <a class="btn btn-default" href="{% if pagination.first %}/admin/tag/?p={{ pagination.first }}{% endif %}">&lt;&lt;</a>
-        <a class="btn btn-default" href="{% if pagination.prev %}/admin/tag/?p={{ pagination.prev }}{% endif %}">&lt;</a>
+        <a class="btn btn-default" href="{% if pagination.first %}/admin/tag/?p={{ pagination.first }}&{{ urlparams }}{% endif %}">&lt;&lt;</a>
+        <a class="btn btn-default" href="{% if pagination.prev %}/admin/tag/?p={{ pagination.prev }}&{{ urlparams }}{% endif %}">&lt;</a>
         {{ pagination.current }}
-        <a class="btn btn-default" href="{% if pagination.next %}/admin/tag/?p={{ pagination.next }}{% endif %}">&gt;</a>
-        <a class="btn btn-default" href="{% if pagination.last %}/admin/tag/?p={{ pagination.last }}{% endif %}">&gt;&gt;</a>
+        <a class="btn btn-default" href="{% if pagination.next %}/admin/tag/?p={{ pagination.next }}&{{ urlparams }}{% endif %}">&gt;</a>
+        <a class="btn btn-default" href="{% if pagination.last %}/admin/tag/?p={{ pagination.last }}&{{ urlparams }}{% endif %}">&gt;&gt;</a>
     </div>
     <table class="table">
         <tr>
@@ -56,9 +58,9 @@
             <td>{{ tag.title }}</td>
             <td>
                 {% if "Timeline_data.change_tagbase" in permissions or "Timeline_data.add_tagversion" in permissions %}
-                <a class="btn btn-default" href="/admin/tag/{{tag.id}}">Edit</a>
+                <a class="btn btn-default" href="/admin/tag/{{tag.id}}?{{ urlparams }}">Edit</a>
                 {% endif %}
-                <form action="/admin/tag/{{tag.id}}" method="post" style="display:inline-block">
+                <form action="/admin/tag/{{tag.id}}?{{ urlparams }}" method="post" style="display:inline-block">
                     {% csrf_token %}
                     <input type="hidden" name="redirect" value="{{request.get_full_path}}"/>
                     {% if "Timeline_data.change_tagbase" in permissions %}

@@ -8,13 +8,14 @@
                 <select name="l" class="form-control selectpicker autosubmit">
                     <option value="">Any language</option>
                     {% for lang in languages %}
-                        <option value="{{lang.code}}" {% if lang.code == language %}selected{% endif %}>{{lang.name}}</option>
+                        <option value="{{ lang.code }}" {% if lang.code == language %}selected{% endif %}>{{ lang.name }}</option>
                     {% endfor %}
                 </select>
             </div>
             <input type="hidden" name="q" value="{{ query }}"/>
+            {% include "extrafields.html" with fields=formparams %}
         </form>
-        <form method="get" action="/admin/event/" class="">
+        <form method="get" action="/admin/event/?{{ urlparams }}" class="">
             <div class="form-group">
                 <div class="col-sm-1">
                     <label class="control-label">Search:</label>
@@ -27,6 +28,7 @@
                 </div>
             </div>
             <input type="hidden" name="l" value="{{ language|default:"" }}"/>
+            {% include "extrafields.html" with fields=formparams %}
         </form>
     </div>
     
@@ -34,7 +36,7 @@
     
     <div class="pull-left actions">
         {% if "Timeline_data.add_eventbase" in permissions and "Timeline_data.add_eventversion" in permissions %}
-            <a class="btn btn-default" href="/admin/event/create">Create new</a>
+            <a class="btn btn-default" href="/admin/event/create?{{ urlparams }}">Create new</a>
         {% endif %}
     </div>
     <div class="pull-right actions">
@@ -56,11 +58,11 @@
                 <td>{{ event.text }}</td>
                 <td style="white-space: nowrap">
                     {% if "Timeline_data.change_eventbase" in permissions or "Timeline_data.add_eventversion" in permissions %}
-                        <a class="btn btn-default" href="/admin/event/{{event.id}}">Edit</a>
+                        <a class="btn btn-default" href="/admin/event/{{event.id}}?{{ urlparams }}">Edit</a>
                     {% endif %}
-                    <form action="/admin/event/{{event.id}}" method="post" style="display:inline-block">
+                    <form action="/admin/event/{{ event.id }}?{{ urlparams }}" method="post" style="display:inline-block">
                         {% csrf_token %}
-                        <input type="hidden" name="redirect" value="{{request.get_full_path}}"/>
+                        <input type="hidden" name="redirect" value="{{ request.get_full_path }}"/>
                         {% if "Timeline_data.change_eventbase" in permissions %}
                             <button class="btn btn-default" name="enabled" value="1">{% if event.enabled %}Disable{% else %}Enable{% endif %}</button>
                         {% endif %}

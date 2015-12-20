@@ -164,7 +164,7 @@
             
             
             <div class="pull-right">
-                <a class="btn btn-default" href="/admin/tag/">Close</a>
+                <a class="btn btn-default" href="/admin/tag/?{{ urlparams }}">Close</a>
                 {% if "Timeline_data.add_tagversion" in permissions %}
                     {% if not new %}
                         <button type="submit" name="save" class="btn btn-default">Save</button>
