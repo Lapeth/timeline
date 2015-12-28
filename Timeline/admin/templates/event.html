@@ -506,10 +506,10 @@
                     {% endif %}
                     <button type="submit" name="publish" class="btn btn-default">Save and publish</button>
                 {% endif %}
-                {% if "Timeline_data.delete_eventversion" in permissions %}
+                {% if not new and "Timeline_data.delete_eventversion" in permissions %}
                     <button type="submit" name="deleteVersion" class="btn btn-default with-confirm" data-dialog-text="Are you sure you want to delete?">Delete version</button>
                 {% endif %}
-                {% if "Timeline_data.delete_eventbase" in permissions %}
+                {% if not new and "Timeline_data.delete_eventbase" in permissions %}
                     <button type="submit" name="deleteEvent" class="btn btn-default with-confirm" data-dialog-text="Are you sure you want to delete?">Delete event</button>
                 {% endif %}
             </div>
