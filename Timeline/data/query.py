@@ -95,6 +95,15 @@ class Query:
                 return True
         return False
     
+    @staticmethod
+    def getLanguageById(id):
+        return Language.objects.filter(id=id).first()
+    
+    @staticmethod
+    def getLanguageByCode(code):
+        return Language.objects.filter(code=code).first()
+    
+    
     
 
     @staticmethod
@@ -244,6 +253,16 @@ class Query:
     
     #------------------------------------------------------------------------------
     
+    @staticmethod
+    def findTags(query, language):
+        if not type(query) is list:
+            query = [query]
+        query = [x.lower() for x in query]
+        dbPath = TagBase.objects.filter(language__code=language)
+        dbPath = dbPath.filter(Q(key__in=query) | Q(tagversion__title__in=query))
+        dbPath = dbPath.distinct()
+        return dbPath.all()
+        
     
     # Show a filterable list of all tags
     @staticmethod

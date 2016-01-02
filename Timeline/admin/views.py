@@ -24,6 +24,7 @@ from Timeline.data.models import EventVersion
 from Timeline.data.models import TagBase
 from Timeline.data.models import TagVersion
 from Timeline.data.models import Language
+from Timeline.data.models import Time
 
 from Timeline.data.query import Query
 
@@ -87,16 +88,44 @@ def listEvents(request):
 @login_required
 def createEvent(request):
     errors = []
+    dummyEvent = {}
+    dummyVersion = {}
     if request.method == "POST":
         try:
             if 'save' in request.POST or 'publish' in request.POST:
                 Query.createEvent(request)
+            if 'redirect' in request.POST:
+                return HttpResponseRedirect(request.POST['redirect'])
             return HttpResponseRedirect("%s/event/" % pathPrefix)
         except PermissionDenied as e:
             errors.append(e)
+    
+    if request.method == "GET":
+        validFields = ['key','title','text','wiki']
+        dummyVersion = {key: value for (key,value) in request.GET.iteritems() if key in validFields}
+        if 'date' in request.GET:
+            try:
+                date = Time.fromString(request.GET['date'])
+                dummyVersion['getYear'] = date.getYear
+                dummyVersion['getMonth'] = date.getMonth
+                dummyVersion['getDate'] = date.getDate
+            except ValueError:
+                pass
+        if 'language' in request.GET:
+            dummyEvent['language'] = Query.getLanguageByCode(request.GET['language'])
+            if 'tag' in request.GET:
+                tagkeys = request.GET['tag']
+                if not type(tagkeys) is 'list':
+                    tagkeys = [tagkeys]
+                tags = Query.findTags(tagkeys, request.GET['language'])
+                if len(tags):
+                    dummyVersion['tags'] = {'all': tags}
+    
     return output(request, "event.html", {
         "nav":"events",
         "user": request.user,
+        "event": dummyEvent,
+        "eventVersion": dummyVersion,
         "new": True,
         "permissions": request.user.get_all_permissions(),
         "errors": errors,

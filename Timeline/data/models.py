@@ -1,10 +1,7 @@
 from django.db import models
 
-
-
-
-
 from django import forms
+import time
 
 class TimeFormWidget(forms.MultiWidget):
 	
@@ -90,6 +87,33 @@ class Time(object):
 			
 		self.year = year
 		self.day = day
+		
+	def __str__(self):
+		return "%s.%s.%s" % (self.getDate(), self.getMonth(), self.getYear())
+	
+
+	@staticmethod
+	def fromPython(pythontime):
+		if not isinstance(pythontime, time.struct_time):
+			raise TypeError("Inappropriate argument type: argument 'pythontime' must be of class 'time.struct_time'")
+		return Time(pythontime.tm_year, pythontime.tm_yday)
+	
+	@staticmethod
+	def fromString(stringtime):
+		stringtime = stringtime.lower()
+		formats = ["%Y","%Y-%m","%Y.%m","%Y-%m-%d","%Y.%m.%d","%d %B %Y","%d %b %Y","%B %d, %Y","%b %d, %Y"]
+		for format in formats:
+			try:
+				t = time.strptime(stringtime, format)
+			except ValueError:
+				pass
+			else:
+				return Time.fromPython(t)
+		else:
+			raise ValueError("could not determine date from %r: does not "
+				"match any of the accepted patterns ('%s')"
+				% (stringtime, "', '".join(formats)))
+		
 
 	def getYear(self):
 		return self.year	
@@ -99,9 +123,9 @@ class Time(object):
 		isLeapYear = self.isLeapYear()
 		for month in range(1, 13):
 			if day < 0:
-				break
+				return month-1
 			day -= Time.getMonthLength(month, isLeapYear)
-		return month-1
+		return month
 	
 	def getDate(self):
 		day = self.day
@@ -430,7 +454,7 @@ class EventVersion(models.Model):
 	wiki = models.CharField('Wikipedia link', max_length=75, null=True, blank=True)
 	tags = models.ManyToManyField(TagBase)
 	created = models.DateTimeField('Version timestamp', auto_now_add=True, editable=False)
-		
+	
 	def save(self, *args, **kwargs):
 		if self.revision is None:
 			revisions = EventVersion.objects.filter(base_id=self.base.id).extra(order_by = ['-revision'])
@@ -454,5 +478,4 @@ class EventVersion(models.Model):
 	
 	def equals(self, other):
 		return self.base == other.base and self.title == other.title and self.text == other.text
-	
 	
