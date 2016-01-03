@@ -49,8 +49,8 @@ def frontpage(request):
 
 def login(request, *args, **kwargs):
     response = authviews.login(request, *args, **kwargs)
-    response["Content-Security-Policy"] = "frame-ancestors *"
-    response["X-Frame-Options"] = "allowall"
+    response["Content-Security-Policy"] = "frame-ancestors *.wikipedia.org"
+    response["X-Frame-Options"] = "ALLOWALL"
     return response
 
 
@@ -144,8 +144,8 @@ def createEvent(request):
         "errors": errors,
         "languages": Query.listLanguages()
     })
-    response["Content-Security-Policy"] = "frame-ancestors *"
-    response["X-Frame-Options"] = "allowall"
+    response["Content-Security-Policy"] = "frame-ancestors 'self' *.wikipedia.org"
+    response["X-Frame-Options"] = "ALLOWALL"
     return response
 
 
