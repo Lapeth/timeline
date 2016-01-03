@@ -397,18 +397,13 @@
                             $(function(){
                                 $("#datepicker").datepicker({startView:2})                         
                                 .on('changeDate', function(ev){
-                                    var date = $('#datepicker').data('date');
+                                    var date = ev.date;
                                     if (date) {
-                                        var dateArr = date.split(".");
-                                        if (dateArr.length === 3) {
-                                            $("input[name=year]").val(parseInt(dateArr[0],10));
-                                            $("input[name=month]").val(parseInt(dateArr[1],10));
-                                            $("input[name=date]").val(parseInt(dateArr[2],10));
-                                        }
+                                        $("input[name=year]").val(date.getFullYear());
+                                        $("input[name=month]").val(date.getMonth()+1);
+                                        $("input[name=date]").val(date.getDate());
                                     }
-                                    if (ev.viewMode === "days") {
-                                        $("#datepicker").datepicker('hide');
-                                    }
+                                    $("#datepicker").datepicker('hide');
                                 });
                             });
                         </script>
