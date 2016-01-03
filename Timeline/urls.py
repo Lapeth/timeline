@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
     
     url(r'^superadmin/', include(admin.site.urls)),
+    url(r'^admin/$', adminviews.frontpage, name='index'),
     url(r'^admin/event/$', adminviews.listEvents, name='index'),
     url(r'^admin/event/create$', adminviews.createEvent, name='create'),
     url(r'^admin/event/(?P<eventId>\d+)$', adminviews.editEvent, name='edit'),

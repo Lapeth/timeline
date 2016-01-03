@@ -41,6 +41,12 @@ import requests
 
 pathPrefix = "/admin"
 
+
+
+def frontpage(request):
+    return output(request, "frontpage.html")
+
+
 # Show a filterable list of all events
 @login_required
 def listEvents(request):
@@ -409,7 +415,7 @@ def lookupWikipedia(request):
                         
                     return HttpResponse(JSONSerializer().serialize(items))
                 
-def output(request, template, data, **kwargs):
+def output(request, template, data={}, **kwargs):
     noheader = request.GET.get("header") == '0'
     data['noheader'] = noheader
     urlparams = {}
