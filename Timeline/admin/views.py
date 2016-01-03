@@ -127,7 +127,7 @@ def createEvent(request):
                 if len(tags):
                     dummyVersion['tags'] = {'all': tags}
     
-    return output(request, "event.html", {
+    response = output(request, "event.html", {
         "nav":"events",
         "user": request.user,
         "event": dummyEvent,
@@ -137,6 +137,9 @@ def createEvent(request):
         "errors": errors,
         "languages": Query.listLanguages()
     })
+    response["Content-Security-Policy"] = "frame-ancestors *"
+    response["X-Frame-Options"] = "allowall"
+    return response
 
 
 # Show an event (POST for saving changes)
