@@ -25,7 +25,7 @@ urlpatterns = patterns('',
     url(r'^admin/tag/(?P<tagId>\d+)/(?P<revision>\d+)$', adminviews.editTag, name='edit'),
     
     #url(r'^admin/login$', adminviews.login, name='login'),
-    url(r'^admin/login/?$', authviews.login, {'template_name': 'user/login.html', 'authentication_form': StyledAuthenticationForm}),
+    url(r'^admin/login/?$', adminviews.login, {'template_name': 'user/login.html', 'authentication_form': StyledAuthenticationForm}),
     url(r'^admin/logout/?$', authviews.logout_then_login),
     url(r'^admin/signup/?$', adminviews.createUser, {'template_name': 'user/create.html', 'creation_form': StyledUserCreationForm}),
     url(r'^admin/signout/?$', adminviews.destroyUser, {'template_name': 'user/destroy.html', 'destruction_form': StyledUserDestructionForm}),

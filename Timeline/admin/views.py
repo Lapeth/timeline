@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.auth import views as authviews
 from django.core.exceptions import PermissionDenied
 from django.contrib.sites.models import get_current_site
 from django.template.response import TemplateResponse
@@ -45,6 +46,12 @@ pathPrefix = "/admin"
 
 def frontpage(request):
     return output(request, "frontpage.html")
+
+def login(request, *args, **kwargs):
+    response = authviews.login(request, *args, **kwargs)
+    response["Content-Security-Policy"] = "frame-ancestors *"
+    response["X-Frame-Options"] = "allowall"
+    return response
 
 
 # Show a filterable list of all events
