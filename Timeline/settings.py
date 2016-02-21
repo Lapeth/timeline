@@ -48,6 +48,7 @@ INSTALLED_APPS = (
     'Timeline.data',
     'Timeline.admin',
     'Timeline.webclient',
+    'django_extensions'
 )
 
 MIDDLEWARE_CLASSES = (

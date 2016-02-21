@@ -1,6 +1,8 @@
 from django.shortcuts import render
+from django.http import HttpRequest
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.http import QueryDict
 from django.core import serializers
 from django.forms import model_to_dict
 from django.template import RequestContext
@@ -15,7 +17,8 @@ from django.contrib.auth import views as authviews
 from django.core.exceptions import PermissionDenied
 from django.contrib.sites.models import get_current_site
 from django.template.response import TemplateResponse
-from django.utils.http import is_safe_url
+from django.utils.http import is_safe_url, urlunquote, urlquote
+from django.utils.six.moves.urllib.parse import urlparse
 from django.shortcuts import resolve_url
 from django.conf import settings
 from auth import UserDestructionForm
@@ -30,6 +33,7 @@ from Timeline.data.models import Time
 from Timeline.data.query import Query
 
 from Timeline.util.JSONSerializer import JSONSerializer
+from Timeline.util.iframe_allow import iframe_allow
 import math
 
 from django.contrib.auth.models import User
@@ -47,11 +51,16 @@ pathPrefix = "/admin"
 def frontpage(request):
     return output(request, "frontpage.html")
 
+@iframe_allow("*.wikipedia.org")
 def login(request, *args, **kwargs):
-    response = authviews.login(request, *args, **kwargs)
-    response["Content-Security-Policy"] = "frame-ancestors *.wikipedia.org"
-    response["X-Frame-Options"] = "ALLOWALL"
-    return response
+    data = {}
+    if request.method == 'GET':
+        if 'next' in request.GET:
+            data.update(getDataObject(request.GET['next']))
+    if not 'extra_context' in kwargs:
+        kwargs['extra_context'] = {}
+    kwargs['extra_context'].update(data)
+    return authviews.login(request, *args, **kwargs)
 
 
 # Show a filterable list of all events
@@ -99,6 +108,7 @@ def listEvents(request):
 
 # Create an event (POST for saving changes)
 @login_required
+@iframe_allow("*.wikipedia.org")
 def createEvent(request):
     errors = []
     dummyEvent = {}
@@ -134,7 +144,7 @@ def createEvent(request):
                 if len(tags):
                     dummyVersion['tags'] = {'all': tags}
     
-    response = output(request, "event.html", {
+    return output(request, "event.html", {
         "nav":"events",
         "user": request.user,
         "event": dummyEvent,
@@ -144,9 +154,6 @@ def createEvent(request):
         "errors": errors,
         "languages": Query.listLanguages()
     })
-    response["Content-Security-Policy"] = "frame-ancestors 'self' *.wikipedia.org"
-    response["X-Frame-Options"] = "ALLOWALL"
-    return response
 
 
 # Show an event (POST for saving changes)
@@ -413,7 +420,6 @@ def lookupWikipedia(request):
                     descriptions = obj[2]
                     links = obj[3]
                     count = min(len(titles), len(descriptions), len(links))
-                    print links
                     for i in range(0, count-1):
                         item = {'title':titles[i],
                                     'description':descriptions[i],
@@ -426,11 +432,23 @@ def lookupWikipedia(request):
                     return HttpResponse(JSONSerializer().serialize(items))
                 
 def output(request, template, data={}, **kwargs):
-    noheader = request.GET.get("header") == '0'
-    data['noheader'] = noheader
-    urlparams = {}
-    if noheader:
-        urlparams['header'] = 0
-    data['urlparams'] = "&".join(["%s=%s" % (key, urlparams[key]) for key in urlparams])
-    data['formparams'] = urlparams
+    data.update(getDataObject(request))
     return render(request, template, data, **kwargs)
+
+def getDataObject(request_or_url):
+    data = {}
+    sourcedict = None
+    if isinstance(request_or_url, HttpRequest):
+        sourcedict = request_or_url.GET
+    elif isinstance(request_or_url, basestring):
+        print urlquote(list(urlparse(urlunquote(request_or_url)))[4])
+        sourcedict = QueryDict(urlquote(list(urlparse(urlunquote(request_or_url)))[4]), mutable=True)
+    if sourcedict is not None:
+        noheader = sourcedict.get('header') == '0'
+        data['noheader'] = noheader
+        urlparams = {}
+        if noheader:
+            urlparams['header'] = 0
+        data['urlparams'] = "&".join(["%s=%s" % (key, urlparams[key]) for key in urlparams])
+        data['formparams'] = urlparams
+    return data

@@ -101,7 +101,7 @@ class Time(object):
 	@staticmethod
 	def fromString(stringtime):
 		stringtime = stringtime.lower()
-		formats = ["%Y","%Y-%m","%Y.%m","%Y-%m-%d","%Y.%m.%d","%d %B %Y","%d %b %Y","%B %d, %Y","%b %d, %Y"]
+		formats = ["%Y","%Y-%m","%Y.%m","%Y-%m-%d","%Y.%m.%d","%d %B %Y","%d. %B %Y","%d %b %Y","%B %d, %Y","%b %d, %Y"]
 		for format in formats:
 			try:
 				t = time.strptime(stringtime, format)

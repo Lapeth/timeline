@@ -2,19 +2,54 @@
     if (window._timeline_form_) {
         window._timeline_form_.show();
     } else {
+        
+        if (!window.jQuery) {
+            var script = document.createElement("script");
+            script.src = "//code.jquery.com/jquery-1.12.0.min.js";
+            document.head.appendChild(script);
+        }
+        
         params = {
             header: 0
         };
         
+        params.title = jQuery("h1#firstHeading").first().text() || null;
+        params.text = jQuery("p").first().text() || null;
+        params.language = jQuery("html").attr("lang");
+        params.wiki = document.location.pathname.replace(/.*\/wiki\//,"");
+        
+        /*var dateFormats = ["%Y","%Y-%m","%Y.%m","%Y-%m-%d","%Y.%m.%d","%d %B %Y","%d. %B %Y","%d %b %Y","%B %d, %Y","%b %d, %Y"]
+        var dateRegexes = [];
+        for (var i=0; i<dateFormats.length; i++) {
+            
+        }*/
+        
+        var dates = [];
+        console.log(jQuery("p:visible"));
+        jQuery("p:visible").each(function(){
+            var text = this.textContent;
+            if (this.textContent) {
+                var match = /\d+\. april \d\d\d\d/ig.exec(this.textContent);
+                console.log(this, this.textContent, match);
+                if (match) {
+                    dates.push(match);
+                }
+            }
+        });
+        params.date = dates;
+        
+        
         var paramList = [];
         for (var key in params) {
             var value = params[key];
-            if (value instanceof Array) {
-                for (var i=0; i<value.length; i++) {
-                    paramList.push(key+"="+value[i]);
+            if (value !== null) {
+                if (value instanceof Array) {
+                    for (var i=0; i<value.length; i++) {
+                        paramList.push(key+"="+value[i]);
+                    }
+                } else {
+                    paramList.push(key+"="+value);
                 }
-            } else {
-                paramList.push(key+"="+value);
             }
         }
         var paramString = paramList.join("&");
