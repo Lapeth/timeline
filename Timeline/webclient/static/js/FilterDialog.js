@@ -80,10 +80,18 @@ FilterDialog = function(param){
 			}
 		}
 	}
-	this._languageChooser.change(function(event) {
+
+	this._languageChooser.selectmenu({
+		position: { my : "left bottom", at: "left top" }
+	});
+	this._languageChooser.on("selectmenuchange", function(event) {
 		this.changeLanguage(event.target.value);
 	}.bind(this));
-	
+	this.on("click focus",function(ev){
+		if (!$.contains($("#language-button").get(0), ev.target)) {
+			$("#language").selectmenu("close");
+		}
+	}.bind(this));
 	
 	this.layout();
 	$(window).resize(this.layout.bind(this));
